@@ -22,7 +22,6 @@ var noactioncancelonhit = 1;   // 0 = off; 1 = on; turns the no action cancel on
 var tradecheat = 1; 		   // 0 = off; 1 = on; turns the trade does not consume items cheat on /off
 var enemydropcheat = 1; 	   // 0 = off; 1 = on; turns the 100% drop rate from enemies cheat on /off
 var plantdropcheat = 1;		   // 0 = off; 1 = on; turns the 100% drop rate from plants cheat on /off
-var ngplus
 // For normal EXP gain, with a 5 XP minimum gain per enemy killed, set: xpcheat = 1; xpmultiplier = 1; xpmingain = 5
 /// END: Cheat settings
 ig.baked = !0;
