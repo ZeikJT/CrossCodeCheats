@@ -22,6 +22,7 @@ var noactioncancelonhit = 1;   // 0 = off; 1 = on; turns the no action cancel on
 var tradecheat = 1; 		   // 0 = off; 1 = on; turns the trade does not consume items cheat on /off
 var enemydropcheat = 1; 	   // 0 = off; 1 = on; turns the 100% drop rate from enemies cheat on /off
 var plantdropcheat = 1;		   // 0 = off; 1 = on; turns the 100% drop rate from plants cheat on /off
+var ngplus
 // For normal EXP gain, with a 5 XP minimum gain per enemy killed, set: xpcheat = 1; xpmultiplier = 1; xpmingain = 5
 /// END: Cheat settings
 ig.baked = !0;
@@ -48,8 +49,8 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	// END: Utilities
 	// START: Cheats
 	replaceProp(sc.PlayerLevelTools, 'computeExp', (originalComputeExp) => {
-		return () => {
-			const exp = originalComputeExp.apply(sc.PlayerLevelTools, arguments);
+		return (...args) => {
+			const exp = originalComputeExp.apply(sc.PlayerLevelTools, args);
 			// If xpcheat is enabled we multiple the exp by xpmultiplier and minimally add xpmingain experience.
 			return xpcheat ? Math.max(exp * xpmultiplier, xpmingain) : exp;
 		};
@@ -65,9 +66,9 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		sc.ARENA_BONUS_OBJECTIVE.ITEMS_USED,
 	].forEach(function (bonus) {
 		replaceProp(bonus, 'check', (originalCheck) => {
-			return function() {
+			return (...args) => {
 				// If arenaalwaysbonuses is enabled the checks always returns true.
-				return arenaalwaysbonuses || originalCheck.apply(this, arguments);
+				return arenaalwaysbonuses || originalCheck.apply(this, args);
 			};
 		});
 	});
