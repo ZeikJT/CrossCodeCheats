@@ -1,0 +1,11 @@
+{
+	"name": "Cheats",
+	"postload": "cheats.js",
+	"version": "1.0.0",
+	"homepage": "https://github.com/ZeikJT/CrossCodeCheats",
+	"description": "This mod adds cheats to CrossCode.",
+	"ccmodDependencies": {
+		"ccloader": "^2.11.0",
+		"crosscode": "1.2.X"
+	}
+}
