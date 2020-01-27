@@ -47,7 +47,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	function noOp() {}
 	// END: Utilities
 	// START: Cheats
-	replaceProp(sc.PlayerLevelTools, 'computeExp', (originalComputeExp) => {
+	replaceProp(sc.PlayerLevelTools, "computeExp", (originalComputeExp) => {
 		return (...args) => {
 			const exp = originalComputeExp.apply(sc.PlayerLevelTools, args);
 			// If xpcheat is enabled we multiple the exp by xpmultiplier and minimally add xpmingain experience.
@@ -64,7 +64,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		sc.ARENA_BONUS_OBJECTIVE.CHAIN,
 		sc.ARENA_BONUS_OBJECTIVE.ITEMS_USED,
 	].forEach(function (bonus) {
-		replaceProp(bonus, 'check', (originalCheck) => {
+		replaceProp(bonus, "check", (originalCheck) => {
 			return (...args) => {
 				// If arenaalwaysbonuses is enabled the checks always returns true.
 				return arenaalwaysbonuses || originalCheck.apply(this, args);
@@ -148,7 +148,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			}
 		},
 		addScore(a, b) {
-			if (!arenanodamagepenalty || a !== 'DAMAGE_TAKEN') {
+			if (!arenanodamagepenalty || a !== "DAMAGE_TAKEN") {
 				// If arenanodamagepenalty is enabled we don't add damage taken.
 				this.parent.apply(this, arguments);
 			}
@@ -161,8 +161,8 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent.apply(this, arguments);
 		},
 	});
-	const getSpReplacer = toggleReplacer(sc.CombatParams.prototype, 'getSp', () => function() {return this.maxSp});
-	const cancelActionReplacer = toggleReplacer(ig.ENTITY.Player.prototype, 'cancelAction', () => noOp);
+	const getSpReplacer = toggleReplacer(sc.CombatParams.prototype, "getSp", () => function() {return this.maxSp});
+	const cancelActionReplacer = toggleReplacer(ig.ENTITY.Player.prototype, "cancelAction", () => noOp);
 	ig.ENTITY.Player.inject({
 		startCharge() {
 			// If ignorespcheat is enabled we replace the getSp function to return the max sp instead of current sp.
@@ -195,7 +195,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			this.parent.apply(this, arguments);
 		},
 	});
-	const removeItemReplacer = toggleReplacer(sc.PlayerModel.prototype, 'removeItem', () => noOp);
+	const removeItemReplacer = toggleReplacer(sc.PlayerModel.prototype, "removeItem", () => noOp);
 	sc.TradeModel.inject({
 		doTrade() {
 			// If tradecheat is enabled we replace the removeItem function with one that does nothing.
@@ -205,8 +205,8 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return returnValue;
 		},
 	});
-	const getCombatRankByLabelReplacer = toggleReplacer(sc.GameModel.prototype, 'getCombatRankByLabel', () => () => 0);
-	const mathRandomReplacer = toggleReplacer(Math, 'random', () => () => 0);
+	const getCombatRankByLabelReplacer = toggleReplacer(sc.GameModel.prototype, "getCombatRankByLabel", () => () => 0);
+	const mathRandomReplacer = toggleReplacer(Math, "random", () => () => 0);
 	sc.EnemyType.inject({
 		resolveItemDrops(a) {
 			enemydropcheat && getCombatRankByLabelReplacer.replace() && mathRandomReplacer.replace() && (a.boosterState = sc.ENEMY_BOOSTER_STATE.BOOSTED);
@@ -214,7 +214,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			enemydropcheat && getCombatRankByLabelReplacer.restore() && mathRandomReplacer.restore();
 		},
 	});
-	const getModifierReplacer = toggleReplacer(sc.CombatParams.prototype, 'getModifier', () => () => 1000);
+	const getModifierReplacer = toggleReplacer(sc.CombatParams.prototype, "getModifier", () => () => 1000);
 	ig.ENTITY.ItemDestruct.inject({
 		dropItem(a) {
 			plantdropcheat && mathRandomReplacer.replace() && getModifierReplacer.replace();
@@ -225,7 +225,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	// END: Cheats
 });
 ig.baked = !0;
-ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.feature.menu.gui.base-menu", "game.feature.menu.menu-model", "impact.base.lang", "impact.feature.gui.gui", "game.feature.interact.button-group", "game.feature.menu.gui.menu-misc", "game.feature.menu.gui.options.options-misc", "game.feature.gui.base.text", "game.feature.gui.base.button", "impact.feature.interact.press-repeater", "game.feature.gui.base.numbers").defines(function () {
+ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.feature.gui.screen.pause-screen", "game.feature.menu.gui.base-menu", "game.feature.menu.menu-model", "impact.base.lang", "impact.feature.gui.gui", "game.feature.interact.button-group", "game.feature.menu.gui.menu-misc", "game.feature.menu.gui.options.options-misc", "game.feature.gui.base.text", "game.feature.gui.base.button", "impact.feature.interact.press-repeater", "game.feature.gui.base.numbers").defines(function () {
 	// START: Lang Extension
 	// If this code is changed into a real mod/extension this can be moved into a separate lang JSON.
 	const LANG_EXTENSION = {
@@ -264,7 +264,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 			this.parent.apply(this, arguments);
 			function setProperties(from, to) {
 				for (const [key, value] of Object.entries(from)) {
-					if (typeof value === 'object') {
+					if (typeof value === "object") {
 						setProperties(value, to[key] = to[key] || {});
 					} else {
 						to[key] = value;
@@ -278,28 +278,28 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 	// END: Lang Extension
 	// START: Cheats Menu
 	const CHEAT_CONFIG = [
-		['xpcheat', {type: 'CHECKBOX'}],
-		['xpmultiplier', {type: 'SLIDER', min: 0, max: 100}],
-		['xpmingain', {type: 'SLIDER', min: 0, max: 1000}],
-		['creditcheat', {type: 'CHECKBOX'}],
-		['creditmultiplier', {type: 'SLIDER', min: 0, max: 100}],
-		['donotremovecredit', {type: 'CHECKBOX'}],
-		['donotremovearenacoins', {type: 'CHECKBOX'}],
-		['arenaalwaysbonuses', {type: 'CHECKBOX'}],
-		['arenaperfectchain', {type: 'CHECKBOX'}],
-		['arenanodamagepenalty', {type: 'CHECKBOX'}],
-		['arenaalwaysplat', {type: 'CHECKBOX'}],
-		['ignorespcheat', {type: 'CHECKBOX'}],
-		['overheatelim', {type: 'CHECKBOX'}],
-		['invincible', {type: 'CHECKBOX'}],
-		['cpcheat', {type: 'CHECKBOX'}],
-		['consumableinfinite', {type: 'CHECKBOX'}],
-		['consumablenocooldown', {type: 'CHECKBOX'}],
-		['noknockbackonhit', {type: 'CHECKBOX'}],
-		['noactioncancelonhit', {type: 'CHECKBOX'}],
-		['tradecheat', {type: 'CHECKBOX'}],
-		['enemydropcheat', {type: 'CHECKBOX'}],
-		['plantdropcheat', {type: 'CHECKBOX'}],
+		["xpcheat", {type: "CHECKBOX"}],
+		["xpmultiplier", {type: "SLIDER", min: 0, max: 100}],
+		["xpmingain", {type: "SLIDER", min: 0, max: 1000}],
+		["creditcheat", {type: "CHECKBOX"}],
+		["creditmultiplier", {type: "SLIDER", min: 0, max: 100}],
+		["donotremovecredit", {type: "CHECKBOX"}],
+		["donotremovearenacoins", {type: "CHECKBOX"}],
+		["arenaalwaysbonuses", {type: "CHECKBOX"}],
+		["arenaperfectchain", {type: "CHECKBOX"}],
+		["arenanodamagepenalty", {type: "CHECKBOX"}],
+		["arenaalwaysplat", {type: "CHECKBOX"}],
+		["ignorespcheat", {type: "CHECKBOX"}],
+		["overheatelim", {type: "CHECKBOX"}],
+		["invincible", {type: "CHECKBOX"}],
+		["cpcheat", {type: "CHECKBOX"}],
+		["consumableinfinite", {type: "CHECKBOX"}],
+		["consumablenocooldown", {type: "CHECKBOX"}],
+		["noknockbackonhit", {type: "CHECKBOX"}],
+		["noactioncancelonhit", {type: "CHECKBOX"}],
+		["tradecheat", {type: "CHECKBOX"}],
+		["enemydropcheat", {type: "CHECKBOX"}],
+		["plantdropcheat", {type: "CHECKBOX"}],
 	];
 	function getCheatValue(cheat) {
 		return window[cheat];
@@ -330,6 +330,24 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 			this.list.setSize(400, 240);
 			this.list.setPos(0, 0);
 			this.list.setAlign(ig.GUI_ALIGN.X_CENTER, ig.GUI_ALIGN.Y_CENTER);
+			// Setup animations so that the list slides in like the other lists do (ex: Save, Options, etc).
+			this.list.hook.transitions = {
+				DEFAULT: {
+					state: {},
+					time: 0.2,
+					timeFunction: KEY_SPLINES.LINEAR,
+				},
+				HIDDEN: {
+					state: {
+						alpha: 0,
+						offsetX: 218,
+					},
+					time: 0.2,
+					timeFunction: KEY_SPLINES.LINEAR,
+				}
+			};
+			// List starts hidden.
+			this.list.doStateTransition("HIDDEN", true);
 
 			// Add press callback so we can react when checkboxes are changed.
 			this.buttonGroup.addPressCallback((control) => {
@@ -352,7 +370,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 				this.contents.addChildGui(label);
 
 				switch (data.type) {
-					case 'CHECKBOX': {
+					case "CHECKBOX": {
 						const button = new sc.CheckboxGui(cheatValue, 30);
 						button.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
 						button.setPos(200, rowYPos);
@@ -361,7 +379,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 						this.buttonGroup.addFocusGui(button, 0, row);
 						break;
 					}
-					case 'SLIDER': {
+					case "SLIDER": {
 						const slider = new sc.OptionFocusSlider((newValue) => {
 							setCheatValue(cheat, newValue);
 							updateNumberDisplay();
@@ -413,7 +431,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 				const control = this.buttonGroup.getCurrentElement();
 				const repeaterValue = this.getRepeaterValue();
 				// Handle keyboard up and down keys.
-				if (repeaterValue === 'up' || repeaterValue === 'down') {
+				if (repeaterValue === "up" || repeaterValue === "down") {
 					const controlTopY = control.hook.pos.y;
 					const controlBottomY = controlTopY + control.hook.size.y;
 					const scrollTopY = this.list.getScrollY();
@@ -428,12 +446,12 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 				}
 				// Handle left and right for sliders.
 				if (control instanceof sc.OptionFocusSlider) {
-					// The value we update by varies based on whether we're holding certain buttons for A11Y.
+					// The value we update by varies based on whether we"re holding certain buttons for A11Y.
 					const changeValue = sc.control.dashHold() ? 100 : sc.control.quickmenu() ? 10 : 1;
 					switch (repeaterValue) {
-						case 'right':
-						case 'left': {
-							const direction = repeaterValue === 'left' ? -1 : 1;
+						case "right":
+						case "left": {
+							const direction = repeaterValue === "left" ? -1 : 1;
 							const newValue = control.getValue() + (changeValue * direction);
 							const clamped = Math.max(control.slider.minValue, Math.min(control.slider.maxValue, newValue));
 							control.setValue(clamped);
@@ -446,13 +464,13 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 		},
 		getRepeaterValue: function () {
 			if (sc.control.rightDown()) {
-				this.repeater.setDown('right');
+				this.repeater.setDown("right");
 			} else if (sc.control.leftDown()) {
-				this.repeater.setDown('left');
+				this.repeater.setDown("left");
 			} else if (sc.control.downDown()) {
-				this.repeater.setDown('down');
+				this.repeater.setDown("down");
 			} else if (sc.control.upDown()) {
-				this.repeater.setDown('up');
+				this.repeater.setDown("up");
 			}
 			return this.repeater.getPressed();
 		},
@@ -468,6 +486,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 			sc.menu.moveLeaSprite(0, 0, sc.MENU_LEA_STATE.HIDDEN); // No idea what this is.
 			sc.menu.buttonInteract.pushButtonGroup(this.buttonGroup); // Make our button group active.
 			ig.interact.setBlockDelay(0.2); // Don't let the user interact while the menu is animating into place.
+			this.list.doStateTransition("DEFAULT"); // Animation the list.
 		},
 		hideMenu() {
 			this.removeObservers();
@@ -477,6 +496,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 		exitMenu() {
 			sc.menu.buttonInteract.removeButtonGroup(this.buttonGroup); // Make our button group inactive.
 			sc.menu.popBackCallback(); // Unregister the back button handling.
+			this.list.doStateTransition("HIDDEN"); // Animation the list.
 		},
 		onBackButtonPress() {
 			// Pop our menu to go back up to the menu that created ours.
@@ -500,6 +520,32 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.pause-screen", "game.f
 				return ig.lang.get("sc.cheats.title");
 			}
 			return this.parent.apply(this, arguments);
+		},
+	});
+	sc.TitleScreenButtonGui.inject({
+		cheatsButton: null,
+		init() {
+			this.parent();
+			this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), this.gameCodeButton.hook.size.x);
+			this.cheatsButton.setAlign(this.gameCodeButton.hook.align.x, this.gameCodeButton.hook.align.y);
+			this.cheatsButton.setPos(this.gameCodeButton.hook.pos.x, this.gameCodeButton.hook.pos.y + 28);
+			this.cheatsButton.onButtonPress = () => {
+				// What menu should be entered when clicked.
+				sc.menu.setDirectMode(true, sc.MENU_SUBMENU.CHEATS);
+				sc.model.enterMenu(true);
+			};
+			this.cheatsButton.hook.transitions = this.gameCodeButton.hook.transitions;
+			this.cheatsButton.doStateTransition("HIDDEN", true);
+			this.buttonGroup.insertFocusGui(this.cheatsButton, 1, 0);
+			this.insertChildGui(this.cheatsButton);
+		},
+		show() {
+			this.parent();
+			this.cheatsButton.doStateTransition("DEFAULT");
+		},
+		hide(a) {
+			this.parent.apply(this, arguments);
+			this.cheatsButton.doStateTransition("HIDDEN", a);
 		},
 	});
 	sc.PauseScreenGui.inject({
