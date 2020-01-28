@@ -1,31 +1,32 @@
 // Written against CrossCode V1.2.0-5
 /// START: Cheat settings
-var xpcheat = 1; 			   // 0 = off; 1 = on; turns the EXP multiplier cheat on /off
-var xpmultiplier = 10; 		   // Sets the EXP multiplier; only used if xpcheat = 1
-var xpmingain = 1;			   // Sets the minimum exp gained from an enemy; only used if xpcheat = 1
-var creditcheat = 1;		   // 0 = off; 1 = on; turns the credits gained multiplier cheat on /off
-var creditmultiplier = 10;	   // Sets the credits gained multiplier; only used if creditcheat = 1
-var donotremovecredit = 1;     // 0 = off; 1 = on; turns the credits don't decrease cheat on /off
-var donotremovearenacoins = 1; // 0 = off; 1 = on; turns the arena coins don't decrease cheat on /off
-var arenaalwaysbonuses = 1;    // 0 = off; 1 = on; turns the arena aways get all bonuses cheat on /off
-var arenaperfectchain = 1;     // 0 = off; 1 = on; turns the arena perfect chain cheat on /off
-var arenanodamagepenalty = 1;  // 0 = off; 1 = on; turns the arena no damage penalty cheat on /off
-var arenaalwaysplat = 1;       // 0 = off; 1 = on; turns the arena always platinum cheat on /off
-var ignorespcheat = 1; 		   // 0 = off; 1 = on; turns the ignore SP cheat on /off
-var overheatelim = 1; 		   // 0 = off; 1 = on; turns the Overheat Elimination cheat on /off
-var invincible = 1; 		   // 0 = off; 1 = on; turns the invincibility cheat on /off
-var cpcheat = 1; 			   // 0 = off; 1 = on; turns the CP does not decrease cheat on /off
-var consumableinfinite = 1;    // 0 = off; 1 = on; turns the consumables do not decrease cheat on /off
-var consumablenocooldown = 1;  // 0 = off; 1 = on; turns the consumables do not add cooldown cheat on /off
-var noknockbackonhit = 1;      // 0 = off; 1 = on; turns the no knockback  on hit cheat on /off
-var noactioncancelonhit = 1;   // 0 = off; 1 = on; turns the no action cancel on hit cheat on /off
-var tradecheat = 1; 		   // 0 = off; 1 = on; turns the trade does not consume items cheat on /off
-var enemydropcheat = 1; 	   // 0 = off; 1 = on; turns the 100% drop rate from enemies cheat on /off
-var plantdropcheat = 1;		   // 0 = off; 1 = on; turns the 100% drop rate from plants cheat on /off
+var xpcheat = 1; 			     // 0 = off; 1 = on; turns the EXP multiplier cheat on /off
+var xpmultiplier = 10; 	         // Sets the EXP multiplier; only used if xpcheat = 1
+var xpmingain = 1;			     // Sets the minimum exp gained from an enemy; only used if xpcheat = 1
+var creditcheat = 1;		     // 0 = off; 1 = on; turns the credits gained multiplier cheat on /off
+var creditmultiplier = 10;	     // Sets the credits gained multiplier; only used if creditcheat = 1
+var donotremovecredit = 1;       // 0 = off; 1 = on; turns the credits don't decrease cheat on /off
+var donotremovearenacoins = 1;   // 0 = off; 1 = on; turns the arena coins don't decrease cheat on /off
+var arenaalwaysbonuses = 1;      // 0 = off; 1 = on; turns the arena aways get all bonuses cheat on /off
+var arenaperfectchain = 1;       // 0 = off; 1 = on; turns the arena perfect chain cheat on /off
+var arenanodamagepenalty = 1;    // 0 = off; 1 = on; turns the arena no damage penalty cheat on /off
+var arenaalwaysplat = 1;         // 0 = off; 1 = on; turns the arena always platinum cheat on /off
+var ignorespcheat = 1;  	     // 0 = off; 1 = on; turns the ignore SP cheat on /off
+var overheatelim = 1; 		     // 0 = off; 1 = on; turns the Overheat Elimination cheat on /off
+var invincible = 1; 		     // 0 = off; 1 = on; turns the invincibility cheat on /off
+var cpcheat = 1; 			     // 0 = off; 1 = on; turns the CP does not decrease cheat on /off
+var consumableinfinite = 1;      // 0 = off; 1 = on; turns the consumables do not decrease cheat on /off
+var consumablenocooldown = 1;    // 0 = off; 1 = on; turns the consumables do not add cooldown cheat on /off
+var noknockbackonhit = 1;        // 0 = off; 1 = on; turns the no knockback  on hit cheat on /off
+var noactioncancelonhit = 1;     // 0 = off; 1 = on; turns the no action cancel on hit cheat on /off
+var tradecheat = 1; 		     // 0 = off; 1 = on; turns the trade does not consume items cheat on /off
+var enemydropcheat = 1; 	     // 0 = off; 1 = on; turns the 100% drop rate from enemies cheat on /off
+var plantdropcheat = 1;		     // 0 = off; 1 = on; turns the 100% drop rate from plants cheat on /off
+var donotremovetrophypoints = 1; // 0 = off; 1 = on; turns the new game plus modifications don't add cost cheat on /off
 // For normal EXP gain, with a 5 XP minimum gain per enemy killed, set: xpcheat = 1; xpmultiplier = 1; xpmingain = 5
 /// END: Cheat settings
 ig.baked = !0;
-ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct").defines(function () {
+ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model").defines(function () {
 	// START: Utilities
 	function replaceProp(obj, prop, replacer) {
 		obj[prop] = replacer(obj[prop]);
@@ -222,10 +223,18 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			plantdropcheat && mathRandomReplacer.restore() && getModifierReplacer.restore();
 		},
 	});
+	sc.NewGamePlusModel.inject({
+		getCost() {
+			if (donotremovetrophypoints) {
+				return 0;
+			}
+			return this.parent.apply(this, arguments);
+		},
+	});
 	// END: Cheats
 });
 ig.baked = !0;
-ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.feature.gui.screen.pause-screen", "game.feature.menu.gui.base-menu", "game.feature.menu.menu-model", "impact.base.lang", "impact.feature.gui.gui", "game.feature.interact.button-group", "game.feature.menu.gui.menu-misc", "game.feature.menu.gui.options.options-misc", "game.feature.gui.base.text", "game.feature.gui.base.button", "impact.feature.interact.press-repeater", "game.feature.gui.base.numbers").defines(function () {
+ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.feature.gui.screen.pause-screen", "game.feature.menu.gui.base-menu", "game.feature.menu.menu-model", "impact.base.lang", "impact.feature.gui.gui", "game.feature.interact.button-group", "game.feature.menu.gui.menu-misc", "game.feature.menu.gui.options.options-misc", "game.feature.gui.base.text", "game.feature.gui.base.button", "impact.feature.interact.press-repeater", "game.feature.gui.base.numbers", "game.feature.font.font-system").defines(function () {
 	// START: Lang Extension
 	// If this code is changed into a real mod/extension this can be moved into a separate lang JSON.
 	const LANG_EXTENSION = {
@@ -244,6 +253,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"creditmultiplier": "Credit Multiplier",
 					"donotremovearenacoins": "Do Not Remove Arena Coins",
 					"donotremovecredit": "Do Not Remove Credit",
+					"donotremovetrophypoints": "NG+ Mods Total Cost Zero",
 					"enemydropcheat": "Enemy Drop",
 					"ignorespcheat": "Ignore SP",
 					"invincible": "Invincible",
@@ -252,7 +262,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"overheatelim": "Overheat Elimination",
 					"plantdropcheat": "Plant Drop",
 					"tradecheat": "Do Not Remove Items On Trade",
-					"xpcheat": "XP Cheat",
+					"xpcheat": "XP Cheats",
 					"xpmingain": "XP Min Gain",
 					"xpmultiplier": "XP Multiplier"
 				}
@@ -276,13 +286,17 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 	})
 	//*/
 	// END: Lang Extension
+	function isNewGamePlus() {
+		// This is the ONLY method in the game that checks for new game plus and returns a boolean...
+		return sc.TitleScreenButtonGui.prototype.checkClearSaveFiles();
+	}
 	// START: Cheats Menu
 	const CHEAT_CONFIG = [
 		["xpcheat", {type: "CHECKBOX"}],
-		["xpmultiplier", {type: "SLIDER", min: 0, max: 100}],
-		["xpmingain", {type: "SLIDER", min: 0, max: 1000}],
+		["xpmultiplier", {type: "SLIDER", min: 0, max: 100, requires: ["xpcheat"]}],
+		["xpmingain", {type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
 		["creditcheat", {type: "CHECKBOX"}],
-		["creditmultiplier", {type: "SLIDER", min: 0, max: 100}],
+		["creditmultiplier", {type: "SLIDER", min: 0, max: 100, requires: ["creditcheat"]}],
 		["donotremovecredit", {type: "CHECKBOX"}],
 		["donotremovearenacoins", {type: "CHECKBOX"}],
 		["arenaalwaysbonuses", {type: "CHECKBOX"}],
@@ -300,23 +314,119 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		["tradecheat", {type: "CHECKBOX"}],
 		["enemydropcheat", {type: "CHECKBOX"}],
 		["plantdropcheat", {type: "CHECKBOX"}],
+		["donotremovetrophypoints", {type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
 	];
+	const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
+	const CHEAT_REQUIRES_MAP = CHEAT_CONFIG.reduce((map, [cheat, {requires}]) => {
+		if (requires) {
+			for (const required of requires) {
+				const requiredDeps = map.get(required) || [];
+				requiredDeps.push(cheat);
+				map.set(required, requiredDeps);
+			}
+		}
+		return map;
+	}, new Map);
 	function getCheatValue(cheat) {
 		return window[cheat];
 	}
 	function setCheatValue(cheat, value) {
 		return window[cheat] = value;
 	}
+	const Label = sc.TextGui.extend({
+		disabledText: "",
+		enabled: true,
+		enabledText: "",
+		init(text) {
+			this.parent(text, {
+				speed: ig.TextBlock.SPEED.IMMEDIATE,
+			});
+			this.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
+			this.disabledText = `\\c[${sc.FONT_COLORS.GREY}]${this.text}`;
+			this.enabledText = this.text;
+		},
+		setEnabled(enabled) {
+			this.enabled = enabled;
+			this.setText(enabled ? this.enabledText : this.disabledText);
+		},
+	});
+	const NumberSlider = sc.OptionFocusSlider.extend({
+		enabled: true,
+		thumbNum: null,
+		init(changeCallback, value, min, max, buttonGroup) {
+			this.parent((newValue) => {
+				this.updateNumberDisplay(newValue);
+				changeCallback(newValue);
+			}, true, true, buttonGroup);
+
+			this.setPreferredThumbSize((String(max).length + 1) * sc.NUMBER_SIZE.NORMAL.width, 21);
+			this.setMinMaxValue(min, max);
+			this.setValue(value);
+
+			// The number preview of what value the slider is on.
+			this.thumbNum = new sc.NumberGui(max);
+			this.updateNumberDisplay(value);
+			this.thumbNum.setAlign(ig.GUI_ALIGN.X_CENTER, ig.GUI_ALIGN.Y_CENTER);
+			this.thumb.addChildGui(this.thumbNum);
+		},
+		setSize(...args) {
+			this.parent(...args);
+			this.updateNumberDisplay();
+		},
+		updateNumberDisplay(newValue = this.thumbNum.getNumber()) {
+			// Update the value shown in the thumb.
+			this.thumbNum.setNumber(newValue, true);
+			// Change the size of the thumbNum to keep it centered.
+			this.thumbNum.hook.size.x = String(newValue).length * sc.NUMBER_SIZE.NORMAL.width;
+		},
+		setEnabled(enabled) {
+			this.enabled = enabled;
+			this.thumbNum.setColor(enabled ? sc.GUI_NUMBER_COLOR.WHITE : sc.GUI_NUMBER_COLOR.GREY);
+		},
+		onMouseInteract(allowMouseOver, allowChange) {
+			this.parent(allowMouseOver, allowChange && this.enabled);
+		},
+		onDrag(...args) {
+			if (!this.enabled) {
+				return;
+			}
+			this.parent(...args);
+		},
+		onKeyboardInput(key) {
+			if (!this.enabled) {
+				return;
+			}
+			// The value we update by varies based on whether we"re holding certain buttons for A11Y.
+			const changeValue = sc.control.dashHold() ? 100 : sc.control.quickmenu() ? 10 : 1;
+			switch (key) {
+				case "right":
+				case "left": {
+					const direction = key === "left" ? -1 : 1;
+					const newValue = this.getValue() + (changeValue * direction);
+					const clamped = Math.max(this.slider.minValue, Math.min(this.slider.maxValue, newValue));
+					this.setValue(clamped);
+					this.changeCallback(clamped);
+					break;
+				}
+			}
+		},
+	});
 	const scrollSpeed = 0.05;
 	const mouseScrollAmount = 20;
 	sc.CheatsMenu = sc.BaseMenu.extend({
 		buttonGroup: null,
 		cheats: null,
 		contents: null,
+		labels: null,
 		list: null,
+		newgameplus: false,
 		repeater: null,
 		init() {
 			this.parent();
+			this.newgameplus = isNewGamePlus();
+			this.cheats = new Map;
+			this.labels = new Map;
+
 			this.hook.size.x = ig.system.width;
 			this.hook.size.y = ig.system.height;
 			this.buttonGroup = new sc.ButtonGroup; // Controls focus of controls and keyboard inputs.
@@ -352,7 +462,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			// Add press callback so we can react when checkboxes are changed.
 			this.buttonGroup.addPressCallback((control) => {
 				if (control instanceof sc.CheckboxGui) {
-					setCheatValue(control.data.cheat, control.pressed);
+					this.setCheatValue(control.data.cheat, control.pressed ? 1 : 0);
 				}
 			});
 
@@ -362,52 +472,33 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 				const cheatValue = getCheatValue(cheat);
 
 				// Each cheat has a corresponding label saying what it is.
-				const label = new sc.TextGui(ig.lang.get(`sc.cheats.name.${cheat}`), {
-					speed: ig.TextBlock.SPEED.IMMEDIATE
-				});
-				label.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
+				const label = new Label(ig.lang.get(`sc.cheats.name.${cheat}`));
 				label.setPos(0, rowYPos);
 				this.contents.addChildGui(label);
+				this.labels.set(cheat, label);
 
+				let control;
 				switch (data.type) {
 					case "CHECKBOX": {
-						const button = new sc.CheckboxGui(cheatValue, 30);
-						button.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
-						button.setPos(200, rowYPos);
-						button.data = {cheat}; // Needed for the pressCallback above.
-						this.contents.addChildGui(button);
-						this.buttonGroup.addFocusGui(button, 0, row);
+						control = new sc.CheckboxGui(cheatValue, 30);
+						control.data = {cheat};
 						break;
 					}
 					case "SLIDER": {
-						const slider = new sc.OptionFocusSlider((newValue) => {
-							setCheatValue(cheat, newValue);
-							updateNumberDisplay();
-						}, true, true, this.buttonGroup);
-						slider.setPreferredThumbSize((String(data.max).length + 1) * sc.NUMBER_SIZE.NORMAL.width, 21);
-						slider.setMinMaxValue(data.min, data.max);
-						slider.setValue(cheatValue);
-						slider.setSize(180, 21, 9);
-						slider.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
-						slider.setPos(200, rowYPos);
-
-						// The number preview of what value the slider is on.
-						const thumbNum = new sc.NumberGui(data.max);
-						function updateNumberDisplay() {
-							const value = getCheatValue(cheat);
-							// Update the value shown in the thumb.
-							thumbNum.setNumber(value, true);
-							// Change the size of the thumbNum to keep it centered.
-							thumbNum.hook.size.x = String(value).length * sc.NUMBER_SIZE.NORMAL.width;
-						}
-						updateNumberDisplay();
-						thumbNum.setAlign(ig.GUI_ALIGN.X_CENTER, ig.GUI_ALIGN.Y_CENTER);
-						slider.thumb.addChildGui(thumbNum);
-
-						this.contents.addChildGui(slider);
-						this.buttonGroup.addFocusGui(slider, 0, row);
+						control = new NumberSlider((newValue) => {
+							this.setCheatValue(cheat, newValue);
+						}, cheatValue, data.min, data.max, this.buttonGroup);
+						control.setSize(180, 21, 9);
 						break;
 					}
+				}
+				control.setAlign(ig.GUI_ALIGN.X_LEFT, ig.GUI_ALIGN.Y_TOP);
+				control.setPos(200, rowYPos);
+				this.contents.addChildGui(control);
+				this.buttonGroup.addFocusGui(control, 0, row);
+				this.cheats.set(cheat, control);
+				if (data.requires) {
+					this.updateCheatControls(cheat);
 				}
 			}
 			const cheatChildren = this.contents.hook.children;
@@ -418,6 +509,19 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.list.box.doScrollTransition(0, 0, 0);
 			this.addChildGui(this.list);
 			this.doStateTransition("DEFAULT");
+		},
+		setCheatValue(cheat, newValue) {
+			setCheatValue(cheat, newValue);
+			if (CHEAT_REQUIRES_MAP.has(cheat)) {
+				for (const dependentCheat of CHEAT_REQUIRES_MAP.get(cheat)) {
+					this.updateCheatControls(dependentCheat);
+				}
+			}
+		},
+		updateCheatControls(cheat) {
+			const enabled = CHEAT_CONFIG_MAP.get(cheat).requires.every(getCheatValue);
+			this.labels.get(cheat).setEnabled(enabled);
+			this.cheats.get(cheat).setEnabled(enabled);
 		},
 		update() {
 			this.parent();
@@ -445,20 +549,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					}
 				}
 				// Handle left and right for sliders.
-				if (control instanceof sc.OptionFocusSlider) {
-					// The value we update by varies based on whether we"re holding certain buttons for A11Y.
-					const changeValue = sc.control.dashHold() ? 100 : sc.control.quickmenu() ? 10 : 1;
-					switch (repeaterValue) {
-						case "right":
-						case "left": {
-							const direction = repeaterValue === "left" ? -1 : 1;
-							const newValue = control.getValue() + (changeValue * direction);
-							const clamped = Math.max(control.slider.minValue, Math.min(control.slider.maxValue, newValue));
-							control.setValue(clamped);
-							control.changeCallback(clamped);
-							break;
-						}
-					}
+				if (control instanceof NumberSlider) {
+					control.onKeyboardInput(repeaterValue);
 				}
 			}
 		},
