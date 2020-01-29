@@ -28,12 +28,12 @@ var donotremovetrophypoints = 1; // 0 = off; 1 = on; turns the new game plus mod
 ig.baked = !0;
 ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model").defines(function () {
 	// START: Utilities
-	function replaceProp(obj, prop, replacer) {
-		obj[prop] = replacer(obj[prop]);
+	function replaceProp(obj, prop, replaceFunc) {
+		obj[prop] = replaceFunc(obj[prop]);
 	}
-	function toggleReplacer(obj, prop, replacer) {
+	function toggleReplacer(obj, prop, replaceFunc) {
 		const original = obj[prop];
-		const replacement = replacer(original);
+		const replacement = replaceFunc(original);
 		const replacer = {
 			replace() {
 				obj[prop] = replacement;
@@ -275,7 +275,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			}
 			setProperties(LANG_EXTENSION, this.labels);
 		},
-	})
+	});
 	//*/
 	// END: Lang Extension
 	function isNewGamePlus() {
