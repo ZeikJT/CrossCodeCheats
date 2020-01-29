@@ -627,9 +627,9 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.parent();
 			this.cheatsButton.doStateTransition("DEFAULT");
 		},
-		hide(a) {
+		hide(timingBoolean) {
 			this.parent.apply(this, arguments);
-			this.cheatsButton.doStateTransition("HIDDEN", a);
+			this.cheatsButton.doStateTransition("HIDDEN", timingBoolean);
 		},
 	});
 	sc.PauseScreenGui.inject({
