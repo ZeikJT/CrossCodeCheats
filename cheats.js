@@ -34,98 +34,90 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	function toggleReplacer(obj, prop, replacer) {
 		const original = obj[prop];
 		const replacement = replacer(original);
-		return {
+		const replacer = {
 			replace() {
 				obj[prop] = replacement;
-				return true; // Enable && chaining
+				return replacer; // Enable chaining
 			},
 			restore() {
 				obj[prop] = original;
-				return true; // Enable && chaining
+				return replacer; // Enable chaining
 			},
 		}
+		return replacer;
 	}
 	function noOp() {}
 	// END: Utilities
 	// START: Cheats
 	replaceProp(sc.PlayerLevelTools, "computeExp", (originalComputeExp) => {
 		return (...args) => {
-			const exp = originalComputeExp.apply(sc.PlayerLevelTools, args);
+			const exp = originalComputeExp.call(sc.PlayerLevelTools, ...args);
 			// If xpcheat is enabled we multiple the exp by xpmultiplier and minimally add xpmingain experience.
 			return xpcheat ? Math.max(exp * xpmultiplier, xpmingain) : exp;
 		};
 	});
-	[
-		sc.ARENA_BONUS_OBJECTIVE.NO_DAMAGE_TAKEN,
-		sc.ARENA_BONUS_OBJECTIVE.NO_ITEMS_USED,
-		sc.ARENA_BONUS_OBJECTIVE.EFFECTIVE_DAMAGE,
-		sc.ARENA_BONUS_OBJECTIVE.HIT_COUNTER,
-		sc.ARENA_BONUS_OBJECTIVE.TIME,
-		sc.ARENA_BONUS_OBJECTIVE.COMBAT_ARTS_USED,
-		sc.ARENA_BONUS_OBJECTIVE.CHAIN,
-		sc.ARENA_BONUS_OBJECTIVE.ITEMS_USED,
-	].forEach(function (bonus) {
+	for (const bonus of Object.values(sc.ARENA_BONUS_OBJECTIVE)) {
 		replaceProp(bonus, "check", (originalCheck) => {
 			return (...args) => {
 				// If arenaalwaysbonuses is enabled the checks always returns true.
-				return arenaalwaysbonuses || originalCheck.apply(this, args);
+				return arenaalwaysbonuses || originalCheck.call(bonus, ...args);
 			};
 		});
-	});
+	};
 	sc.PlayerModel.inject({
-		addCredit(a, b, c) {
+		addCredit(amount, ...args) {
 			// If creditcheat is enabled we multiply the credits by creditmultiplier.
-			this.parent(creditcheat ? a * creditmultiplier : a, b, c);
+			this.parent(creditcheat ? amount * creditmultiplier : amount, ...args);
 		},
-		removeCredit(a, b) {
+		removeCredit(amount, ...args) {
 			// If donotremovecredit is enabled we change the credit deduction to 0.
-			this.parent(donotremovecredit ? 0 : a, b);
+			this.parent(donotremovecredit ? 0 : amount, ...args);
 		},
-		addElementLoad(a) {
+		addElementLoad(amount, ...args) {
 			// If overheatelim is enabled we pass in 0 for the overheat value.
-			this.parent(overheatelim ? 0 : a);
+			this.parent(overheatelim ? 0 : amount, ...args);
 		},
-		learnSkill(a) {
-			const element = sc.skilltree.getSkill(a).element;
+		learnSkill(skillId, ...args) {
+			const element = sc.skilltree.getSkill(skillId).element;
 			const previousSkillPoints = this.skillPoints[element];
-			this.parent.apply(this, arguments);
+			this.parent(skillId, ...args);
 			if (cpcheat) {
 				// If chcheat is enabled reset the cp value to what it was before running learnSkill.
 				this.skillPoints[element] = previousSkillPoints;
 			}
 		},
-		useItem(a) {
-			if (consumableinfinite && a >= 0 && this.items[a]) {
+		useItem(itemIndex, ...args) {
+			if (consumableinfinite && itemIndex >= 0 && this.items[itemIndex]) {
 				// If consumableinfinite is enabled we set the amount of the current item to be 1 more so that decreasing the value won't have any effect.
-				this.items[a] = this.items[a] + 1;
+				this.items[itemIndex] = this.items[itemIndex] + 1;
 			}
-			return this.parent.apply(this, arguments);
+			return this.parent(itemIndex, ...args);
 		},
-		getItemBlockTime() {
+		getItemBlockTime(...args) {
 			if (consumablenocooldown) {
 				// If consumablenocooldown is enabled we return a time of 0 for item block, which means there won't be any block.
 				return 0;
 			}
-			return this.parent.apply(this, arguments);
+			return this.parent(...args);
 		},
 	});
 	sc.Arena.inject({
-		removeArenaCoins(a) {
-			this.parent.apply(this, arguments);
+		removeArenaCoins(amount, ...args) {
+			this.parent(amount, ...args);
 			if (donotremovearenacoins) {
 				// If donotremovearenacoins is enabled we add the coins back.
-				this.coins = this.coins + a;
+				this.coins = this.coins + amount;
 			}
 		},
-		onPostUpdate() {
+		onPostUpdate(...args) {
 			const runtime = sc.arena.runtime;
 			if (arenaperfectchain && runtime && runtime.chainTimer > 0) {
 				// If arenaperfectchain is enabled we reset the chain timer to avoid a chain timing out.
 				runtime.chainTimer = sc.ARENA_CHAIN_MAX_TIME;
 			}
-			this.parent.apply(this, arguments);
+			this.parent(...args);
 		},
-		onPreDamageModification(a, b) {
+		onPreDamageModification(data, ...args) {
 			let hpChanged = false;
 			let actualCurrentHp = 0;
 			let playerParams = null;
@@ -136,72 +128,72 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				}
 				playerParams = sc.model.player.params;
 				actualCurrentHp = playerParams.currentHp;
-				if (invincible && playerParams.currentHp <= a.damage) {
+				if (invincible && playerParams.currentHp <= data.damage) {
 					// If invincible is enabled we set hp to be above the incoming damage.
-					playerParams.currentHp = a.damage + 1;
+					playerParams.currentHp = data.damage + 1;
 					hpChanged = true;
 				}
 			}
-			this.parent.apply(this, arguments);
+			this.parent(data, ...args);
 			if (hpChanged) {
 				// If we changed the hp reset it back to the value it was originally.
 				playerParams = actualCurrentHp;
 			}
 		},
-		addScore(a, b) {
-			if (!arenanodamagepenalty || a !== "DAMAGE_TAKEN") {
+		addScore(type, ...args) {
+			if (!arenanodamagepenalty || type !== "DAMAGE_TAKEN") {
 				// If arenanodamagepenalty is enabled we don't add damage taken.
-				this.parent.apply(this, arguments);
+				this.parent(type, ...args);
 			}
 		},
-		getMedalForCurrentRound() {
+		getMedalForCurrentRound(...args) {
 			if (arenaalwaysplat) {
 				// If arenaalwaysplat is enabled we return a platinum trophy.
 				return sc.ARENA_MEDALS_TROPHIES.PLATIN;
 			}
-			return this.parent.apply(this, arguments);
+			return this.parent(...args);
 		},
 	});
 	const getSpReplacer = toggleReplacer(sc.CombatParams.prototype, "getSp", () => function() {return this.maxSp});
 	const cancelActionReplacer = toggleReplacer(ig.ENTITY.Player.prototype, "cancelAction", () => noOp);
 	ig.ENTITY.Player.inject({
-		startCharge() {
+		startCharge(...args) {
 			// If ignorespcheat is enabled we replace the getSp function to return the max sp instead of current sp.
 			ignorespcheat && getSpReplacer.replace();
-			const returnValue = this.parent.apply(this, arguments);
+			const returnValue = this.parent(...args);
 			ignorespcheat && getSpReplacer.restore();
 			return returnValue;
 		},
-		doDamageMovement() {
+		doDamageMovement(...args) {
 			if (noknockbackonhit && this.dying === sc.DYING_STATE.ALIVE) {
 				// If noknockbackonhit is enabled we do nothing.
 				return 0;
 			}
-			return this.parent.apply(this, arguments);
+			return this.parent(...args);
 		},
-		onDamage() {
+		onDamage(...args) {
 			// If noactioncancelonhit is enabled we replace the cancelAction function with one that does nothing.
 			noactioncancelonhit && cancelActionReplacer.replace();
-			const returnValue = this.parent.apply(this, arguments);
+			const returnValue = this.parent(...args);
 			noactioncancelonhit && cancelActionReplacer.restore();
 			return returnValue;
 		},
 	});
 	sc.CombatParams.inject({
-		reduceHp(a) {
-			if (invincible && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= a) {
+		reduceHp(amount, ...args) {
+			if (invincible && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
 				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
-				this.currentHp = a + 1;
+				this.currentHp = amount + 1;
 			}
-			this.parent.apply(this, arguments);
+			this.parent(amount, ...args);
 		},
 	});
 	const removeItemReplacer = toggleReplacer(sc.PlayerModel.prototype, "removeItem", () => noOp);
 	sc.TradeModel.inject({
-		doTrade() {
+		doTrade(...args) {
 			// If tradecheat is enabled we replace the removeItem function with one that does nothing.
 			tradecheat && removeItemReplacer.replace();
-			const returnValue = this.parent.apply(this, arguments);
+			const returnValue = this.parent(...args);
 			tradecheat && removeItemReplacer.restore();
 			return returnValue;
 		},
@@ -209,26 +201,26 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	const getCombatRankByLabelReplacer = toggleReplacer(sc.GameModel.prototype, "getCombatRankByLabel", () => () => 0);
 	const mathRandomReplacer = toggleReplacer(Math, "random", () => () => 0);
 	sc.EnemyType.inject({
-		resolveItemDrops(a) {
-			enemydropcheat && getCombatRankByLabelReplacer.replace() && mathRandomReplacer.replace() && (a.boosterState = sc.ENEMY_BOOSTER_STATE.BOOSTED);
-			this.parent.apply(this, arguments);
+		resolveItemDrops(enemy, ...args) {
+			enemydropcheat && getCombatRankByLabelReplacer.replace() && mathRandomReplacer.replace() && (enemy.boosterState = sc.ENEMY_BOOSTER_STATE.BOOSTED);
+			this.parent(enemy, ...args);
 			enemydropcheat && getCombatRankByLabelReplacer.restore() && mathRandomReplacer.restore();
 		},
 	});
 	const getModifierReplacer = toggleReplacer(sc.CombatParams.prototype, "getModifier", () => () => 1000);
 	ig.ENTITY.ItemDestruct.inject({
-		dropItem(a) {
+		dropItem(...args) {
 			plantdropcheat && mathRandomReplacer.replace() && getModifierReplacer.replace();
-			this.parent.apply(this, arguments);
+			this.parent(...args);
 			plantdropcheat && mathRandomReplacer.restore() && getModifierReplacer.restore();
 		},
 	});
 	sc.NewGamePlusModel.inject({
-		getCost() {
+		getCost(...args) {
 			if (donotremovetrophypoints) {
 				return 0;
 			}
-			return this.parent.apply(this, arguments);
+			return this.parent(...args);
 		},
 	});
 	// END: Cheats
@@ -270,8 +262,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		}
 	};
 	ig.Lang.inject({
-		onload() {
-			this.parent.apply(this, arguments);
+		onload(...args) {
+			this.parent(...args);
 			function setProperties(from, to) {
 				for (const [key, value] of Object.entries(from)) {
 					if (typeof value === "object") {
@@ -357,7 +349,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.parent((newValue) => {
 				this.updateNumberDisplay(newValue);
 				changeCallback(newValue);
-			}, true, true, buttonGroup);
+			}, /* snap= */ true, /* fill= */ true, buttonGroup);
 
 			this.setPreferredThumbSize((String(max).length + 1) * sc.NUMBER_SIZE.NORMAL.width, 21);
 			this.setMinMaxValue(min, max);
