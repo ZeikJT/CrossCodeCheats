@@ -27,6 +27,7 @@ const CHEAT_CONFIG = [
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
+	window[cheat] = defaultValue; // For non CCLoader implementations.
 	return [cheat, defaultValue];
 }));
 // Adaptors for getters and setters to ensure we can swap out the underlying structures easily.
