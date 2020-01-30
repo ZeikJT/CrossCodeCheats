@@ -11,4 +11,4 @@ If you want to install the cheats into the game directly without using CCLoader 
 
 ![pause menu with Cheats button](https://i.imgur.com/aN9rl3J.png "Cheats button")
 
-![Cheats menu](https://i.imgur.com/7WrqSSS.png "Cheats menu")
+![Cheats menu](https://i.imgur.com/hHPgJmF.png "Cheats menu")

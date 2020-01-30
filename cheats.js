@@ -1,30 +1,47 @@
 // Written against CrossCode V1.2.0-5
-/// START: Cheat settings
-var xpcheat = 1; 			     // 0 = off; 1 = on; turns the EXP multiplier cheat on /off
-var xpmultiplier = 10; 	         // Sets the EXP multiplier; only used if xpcheat = 1
-var xpmingain = 1;			     // Sets the minimum exp gained from an enemy; only used if xpcheat = 1
-var creditcheat = 1;		     // 0 = off; 1 = on; turns the credits gained multiplier cheat on /off
-var creditmultiplier = 10;	     // Sets the credits gained multiplier; only used if creditcheat = 1
-var donotremovecredit = 1;       // 0 = off; 1 = on; turns the credits don't decrease cheat on /off
-var donotremovearenacoins = 1;   // 0 = off; 1 = on; turns the arena coins don't decrease cheat on /off
-var arenaalwaysbonuses = 1;      // 0 = off; 1 = on; turns the arena aways get all bonuses cheat on /off
-var arenaperfectchain = 1;       // 0 = off; 1 = on; turns the arena perfect chain cheat on /off
-var arenanodamagepenalty = 1;    // 0 = off; 1 = on; turns the arena no damage penalty cheat on /off
-var arenaalwaysplat = 1;         // 0 = off; 1 = on; turns the arena always platinum cheat on /off
-var ignorespcheat = 1;  	     // 0 = off; 1 = on; turns the ignore SP cheat on /off
-var overheatelim = 1; 		     // 0 = off; 1 = on; turns the Overheat Elimination cheat on /off
-var invincible = 1; 		     // 0 = off; 1 = on; turns the invincibility cheat on /off
-var cpcheat = 1; 			     // 0 = off; 1 = on; turns the CP does not decrease cheat on /off
-var consumableinfinite = 1;      // 0 = off; 1 = on; turns the consumables do not decrease cheat on /off
-var consumablenocooldown = 1;    // 0 = off; 1 = on; turns the consumables do not add cooldown cheat on /off
-var noknockbackonhit = 1;        // 0 = off; 1 = on; turns the no knockback  on hit cheat on /off
-var noactioncancelonhit = 1;     // 0 = off; 1 = on; turns the no action cancel on hit cheat on /off
-var tradecheat = 1; 		     // 0 = off; 1 = on; turns the trade does not consume items cheat on /off
-var enemydropcheat = 1; 	     // 0 = off; 1 = on; turns the 100% drop rate from enemies cheat on /off
-var plantdropcheat = 1;		     // 0 = off; 1 = on; turns the 100% drop rate from plants cheat on /off
-var donotremovetrophypoints = 1; // 0 = off; 1 = on; turns the new game plus modifications don't add cost cheat on /off
-// For normal EXP gain, with a 5 XP minimum gain per enemy killed, set: xpcheat = 1; xpmultiplier = 1; xpmingain = 5
-/// END: Cheat settings
+(() => {
+const CHEAT_CONFIG = [
+	["xpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
+	["xpmultiplier",            {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["xpcheat"]}],
+	["xpmingain",               {defaultValue: 1,    type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
+	["creditcheat",             {defaultValue: true, type: "CHECKBOX"}],
+	["creditmultiplier",        {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["creditcheat"]}],
+	["donotremovecredit",       {defaultValue: true, type: "CHECKBOX"}],
+	["donotremovearenacoins",   {defaultValue: true, type: "CHECKBOX"}],
+	["arenaalwaysbonuses",      {defaultValue: true, type: "CHECKBOX"}],
+	["arenaperfectchain",       {defaultValue: true, type: "CHECKBOX"}],
+	["arenanodamagepenalty",    {defaultValue: true, type: "CHECKBOX"}],
+	["arenaalwaysplat",         {defaultValue: true, type: "CHECKBOX"}],
+	["ignorespcheat",           {defaultValue: true, type: "CHECKBOX"}],
+	["overheatelim",            {defaultValue: true, type: "CHECKBOX"}],
+	["invincible",              {defaultValue: true, type: "CHECKBOX"}],
+	["cpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
+	["consumableinfinite",      {defaultValue: true, type: "CHECKBOX"}],
+	["consumablenocooldown",    {defaultValue: true, type: "CHECKBOX"}],
+	["noknockbackonhit",        {defaultValue: true, type: "CHECKBOX"}],
+	["noactioncancelonhit",     {defaultValue: true, type: "CHECKBOX"}],
+	["tradecheat",              {defaultValue: true, type: "CHECKBOX"}],
+	["enemydropcheat",          {defaultValue: true, type: "CHECKBOX"}],
+	["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
+	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
+];
+const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
+const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
+	return [cheat, defaultValue];
+}));
+// Adapdtors for getters and setters to ensure we can swap out the underlying structures easily.
+function getCheatValue(cheat) {
+	return cheatValues.get(cheat);
+}
+function getCheatsObject() {
+	return Array.from(cheatValues).reduce((obj, [cheat, value]) => {
+		obj[cheat] = value;
+		return obj;
+	}, Object.create(null));
+}
+function setCheatValue(cheat, value) {
+	return cheatValues.set(cheat, value);
+}
 ig.baked = !0;
 ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model").defines(function () {
 	// START: Utilities
@@ -53,48 +70,48 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		return (...args) => {
 			const exp = originalComputeExp.call(sc.PlayerLevelTools, ...args);
 			// If xpcheat is enabled we multiple the exp by xpmultiplier and minimally add xpmingain experience.
-			return xpcheat ? Math.max(exp * xpmultiplier, xpmingain) : exp;
+			return getCheatValue("xpcheat") ? Math.max(exp * getCheatValue("xpmultiplier"), getCheatValue("xpmingain")) : exp;
 		};
 	});
 	for (const bonus of Object.values(sc.ARENA_BONUS_OBJECTIVE)) {
 		replaceProp(bonus, "check", (originalCheck) => {
 			return (...args) => {
 				// If arenaalwaysbonuses is enabled the checks always returns true.
-				return arenaalwaysbonuses || originalCheck.call(bonus, ...args);
+				return getCheatValue("arenaalwaysbonuses") || originalCheck.call(bonus, ...args);
 			};
 		});
 	};
 	sc.PlayerModel.inject({
 		addCredit(amount, ...args) {
 			// If creditcheat is enabled we multiply the credits by creditmultiplier.
-			this.parent(creditcheat ? amount * creditmultiplier : amount, ...args);
+			this.parent(getCheatValue("creditcheat") ? amount * getCheatValue("creditmultiplier") : amount, ...args);
 		},
 		removeCredit(amount, ...args) {
 			// If donotremovecredit is enabled we change the credit deduction to 0.
-			this.parent(donotremovecredit ? 0 : amount, ...args);
+			this.parent(getCheatValue("donotremovecredit") ? 0 : amount, ...args);
 		},
 		addElementLoad(amount, ...args) {
 			// If overheatelim is enabled we pass in 0 for the overheat value.
-			this.parent(overheatelim ? 0 : amount, ...args);
+			this.parent(getCheatValue("overheatelim") ? 0 : amount, ...args);
 		},
 		learnSkill(skillId, ...args) {
 			const element = sc.skilltree.getSkill(skillId).element;
 			const previousSkillPoints = this.skillPoints[element];
 			this.parent(skillId, ...args);
-			if (cpcheat) {
+			if (getCheatValue("cpcheat")) {
 				// If chcheat is enabled reset the cp value to what it was before running learnSkill.
 				this.skillPoints[element] = previousSkillPoints;
 			}
 		},
 		useItem(itemIndex, ...args) {
-			if (consumableinfinite && itemIndex >= 0 && this.items[itemIndex]) {
+			if (getCheatValue("consumableinfinite") && itemIndex >= 0 && this.items[itemIndex]) {
 				// If consumableinfinite is enabled we set the amount of the current item to be 1 more so that decreasing the value won't have any effect.
 				this.items[itemIndex] = this.items[itemIndex] + 1;
 			}
 			return this.parent(itemIndex, ...args);
 		},
 		getItemBlockTime(...args) {
-			if (consumablenocooldown) {
+			if (getCheatValue("consumablenocooldown")) {
 				// If consumablenocooldown is enabled we return a time of 0 for item block, which means there won't be any block.
 				return 0;
 			}
@@ -104,14 +121,14 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	sc.Arena.inject({
 		removeArenaCoins(amount, ...args) {
 			this.parent(amount, ...args);
-			if (donotremovearenacoins) {
+			if (getCheatValue("donotremovearenacoins")) {
 				// If donotremovearenacoins is enabled we add the coins back.
 				this.coins = this.coins + amount;
 			}
 		},
 		onPostUpdate(...args) {
 			const runtime = sc.arena.runtime;
-			if (arenaperfectchain && runtime && runtime.chainTimer > 0) {
+			if (getCheatValue("arenaperfectchain") && runtime && runtime.chainTimer > 0) {
 				// If arenaperfectchain is enabled we reset the chain timer to avoid a chain timing out.
 				runtime.chainTimer = sc.ARENA_CHAIN_MAX_TIME;
 			}
@@ -122,7 +139,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			let actualCurrentHp = 0;
 			let playerParams = null;
 			if (this.active) {
-				if (arenaperfectchain) {
+				if (getCheatValue("arenaperfectchain")) {
 					// If arenaperfectchain is enabled we reset the chain hits counter to keep chains going despite any hits.
 					this.runtime.chainHits = sc.ARENA_MAX_CHAIN_HITS;
 				}
@@ -141,13 +158,13 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			}
 		},
 		addScore(type, ...args) {
-			if (!arenanodamagepenalty || type !== "DAMAGE_TAKEN") {
+			if (!getCheatValue("arenanodamagepenalty") || type !== "DAMAGE_TAKEN") {
 				// If arenanodamagepenalty is enabled we don't add damage taken.
 				this.parent(type, ...args);
 			}
 		},
 		getMedalForCurrentRound(...args) {
-			if (arenaalwaysplat) {
+			if (getCheatValue("arenaalwaysplat")) {
 				// If arenaalwaysplat is enabled we return a platinum trophy.
 				return sc.ARENA_MEDALS_TROPHIES.PLATIN;
 			}
@@ -159,13 +176,13 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	ig.ENTITY.Player.inject({
 		startCharge(...args) {
 			// If ignorespcheat is enabled we replace the getSp function to return the max sp instead of current sp.
-			ignorespcheat && getSpReplacer.replace();
+			getCheatValue("ignorespcheat") && getSpReplacer.replace();
 			const returnValue = this.parent(...args);
-			ignorespcheat && getSpReplacer.restore();
+			getCheatValue("ignorespcheat") && getSpReplacer.restore();
 			return returnValue;
 		},
 		doDamageMovement(...args) {
-			if (noknockbackonhit && this.dying === sc.DYING_STATE.ALIVE) {
+			if (getCheatValue("noknockbackonhit") && this.dying === sc.DYING_STATE.ALIVE) {
 				// If noknockbackonhit is enabled we do nothing.
 				return 0;
 			}
@@ -173,15 +190,15 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		},
 		onDamage(...args) {
 			// If noactioncancelonhit is enabled we replace the cancelAction function with one that does nothing.
-			noactioncancelonhit && cancelActionReplacer.replace();
+			getCheatValue("noactioncancelonhit") && cancelActionReplacer.replace();
 			const returnValue = this.parent(...args);
-			noactioncancelonhit && cancelActionReplacer.restore();
+			getCheatValue("noactioncancelonhit") && cancelActionReplacer.restore();
 			return returnValue;
 		},
 	});
 	sc.CombatParams.inject({
 		reduceHp(amount, ...args) {
-			if (invincible && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
+			if (getCheatValue("invincible") && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
 				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
 				this.currentHp = amount + 1;
 			}
@@ -192,9 +209,9 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	sc.TradeModel.inject({
 		doTrade(...args) {
 			// If tradecheat is enabled we replace the removeItem function with one that does nothing.
-			tradecheat && removeItemReplacer.replace();
+			getCheatValue("tradecheat") && removeItemReplacer.replace();
 			const returnValue = this.parent(...args);
-			tradecheat && removeItemReplacer.restore();
+			getCheatValue("tradecheat") && removeItemReplacer.restore();
 			return returnValue;
 		},
 	});
@@ -202,22 +219,22 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 	const mathRandomReplacer = toggleReplacer(Math, "random", () => () => 0);
 	sc.EnemyType.inject({
 		resolveItemDrops(enemy, ...args) {
-			enemydropcheat && getCombatRankByLabelReplacer.replace() && mathRandomReplacer.replace() && (enemy.boosterState = sc.ENEMY_BOOSTER_STATE.BOOSTED);
+			getCheatValue("enemydropcheat") && getCombatRankByLabelReplacer.replace() && mathRandomReplacer.replace() && (enemy.boosterState = sc.ENEMY_BOOSTER_STATE.BOOSTED);
 			this.parent(enemy, ...args);
-			enemydropcheat && getCombatRankByLabelReplacer.restore() && mathRandomReplacer.restore();
+			getCheatValue("enemydropcheat") && getCombatRankByLabelReplacer.restore() && mathRandomReplacer.restore();
 		},
 	});
 	const getModifierReplacer = toggleReplacer(sc.CombatParams.prototype, "getModifier", () => () => 1000);
 	ig.ENTITY.ItemDestruct.inject({
 		dropItem(...args) {
-			plantdropcheat && mathRandomReplacer.replace() && getModifierReplacer.replace();
+			getCheatValue("plantdropcheat") && mathRandomReplacer.replace() && getModifierReplacer.replace();
 			this.parent(...args);
-			plantdropcheat && mathRandomReplacer.restore() && getModifierReplacer.restore();
+			getCheatValue("plantdropcheat") && mathRandomReplacer.restore() && getModifierReplacer.restore();
 		},
 	});
 	sc.NewGamePlusModel.inject({
 		getCost(...args) {
-			if (donotremovetrophypoints) {
+			if (getCheatValue("donotremovetrophypoints")) {
 				return 0;
 			}
 			return this.parent(...args);
@@ -283,32 +300,6 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		return sc.TitleScreenButtonGui.prototype.checkClearSaveFiles();
 	}
 	// START: Cheats Menu
-	const CHEAT_CONFIG = [
-		["xpcheat", {type: "CHECKBOX"}],
-		["xpmultiplier", {type: "SLIDER", min: 0, max: 100, requires: ["xpcheat"]}],
-		["xpmingain", {type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
-		["creditcheat", {type: "CHECKBOX"}],
-		["creditmultiplier", {type: "SLIDER", min: 0, max: 100, requires: ["creditcheat"]}],
-		["donotremovecredit", {type: "CHECKBOX"}],
-		["donotremovearenacoins", {type: "CHECKBOX"}],
-		["arenaalwaysbonuses", {type: "CHECKBOX"}],
-		["arenaperfectchain", {type: "CHECKBOX"}],
-		["arenanodamagepenalty", {type: "CHECKBOX"}],
-		["arenaalwaysplat", {type: "CHECKBOX"}],
-		["ignorespcheat", {type: "CHECKBOX"}],
-		["overheatelim", {type: "CHECKBOX"}],
-		["invincible", {type: "CHECKBOX"}],
-		["cpcheat", {type: "CHECKBOX"}],
-		["consumableinfinite", {type: "CHECKBOX"}],
-		["consumablenocooldown", {type: "CHECKBOX"}],
-		["noknockbackonhit", {type: "CHECKBOX"}],
-		["noactioncancelonhit", {type: "CHECKBOX"}],
-		["tradecheat", {type: "CHECKBOX"}],
-		["enemydropcheat", {type: "CHECKBOX"}],
-		["plantdropcheat", {type: "CHECKBOX"}],
-		["donotremovetrophypoints", {type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
-	];
-	const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 	const CHEAT_REQUIRES_MAP = CHEAT_CONFIG.reduce((map, [cheat, {requires}]) => {
 		if (requires) {
 			for (const required of requires) {
@@ -319,11 +310,53 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		}
 		return map;
 	}, new Map);
-	function getCheatValue(cheat) {
-		return window[cheat];
+	function getConfigFilePath() {
+		let prefix = "./";
+		if ("simplify" in window) {
+			const cheatsMod = simplify.getMod("Cheats");
+			if (cheatsMod) {
+				prefix = cheatsMod.baseDirectory;
+			}
+		}
+		return `${prefix}cheats.json`;
 	}
-	function setCheatValue(cheat, value) {
-		return window[cheat] = value;
+	const fsPromises = require("fs").promises;
+	// Determine whether we're in CCLoader and if we are we wait for simplify to load.
+	new Promise((resolve) => {
+		if ("activeMods" in window) {
+			document.body.addEventListener("simplifyInitialized", resolve);
+		} else {
+			resolve();
+		}
+	}).then(() => {
+		// Load the cheat values from the file to initialize.
+		fsPromises.readFile(getConfigFilePath(), "utf-8").then((str) => {
+			const config = JSON.parse(str);
+			for (const [cheat, value] of Object.entries(config)) {
+				if (CHEAT_CONFIG_MAP.has(cheat)) {
+					const cheatData = CHEAT_CONFIG_MAP.get(cheat);
+					switch (cheatData.type) {
+						case "CHECKBOX": {
+							setCheatValue(cheat, !!value);
+							break;
+						}
+						case "SLIDER": {
+							const num = Number(value);
+							if (num !== NaN) {
+								const clamped = Math.max(cheatData.min, Math.min(cheatData.max, num));
+								setCheatValue(cheat, clamped);
+							}
+							break;
+						}
+					}
+				}
+			}
+		}).catch((err) => {
+			// We couldn't read the file or it was malformed so we just stick to the defaults.
+		});
+	});
+	function saveCheatsToFile() {
+		return fsPromises.writeFile(getConfigFilePath(), JSON.stringify(getCheatsObject(), null, "\t"), "utf-8");
 	}
 	const Label = sc.TextGui.extend({
 		disabledText: "",
@@ -408,6 +441,11 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 	sc.CheatsMenu = sc.BaseMenu.extend({
 		buttonGroup: null,
 		cheats: null,
+		cheatsChanged: 0,
+		cheatsChangedSaved: 0,
+		cheatsChangedSaving: false,
+		cheatsChangedTimer: -1,
+		cheatsChangedTimeout: 5 * 1000, // 5 seconds
 		contents: null,
 		labels: null,
 		list: null,
@@ -454,7 +492,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			// Add press callback so we can react when checkboxes are changed.
 			this.buttonGroup.addPressCallback((control) => {
 				if (control instanceof sc.CheckboxGui) {
-					this.setCheatValue(control.data.cheat, control.pressed ? 1 : 0);
+					this.setCheatValue(control.data.cheat, !!control.pressed);
 				}
 			});
 
@@ -502,8 +540,31 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.addChildGui(this.list);
 			this.doStateTransition("DEFAULT");
 		},
+		clearCheatsAutosave() {
+			if (this.cheatsChangedTimer !== -1) {
+				clearTimeout(this.cheatsChangedTimer);
+				this.cheatsChangedTimer = -1;
+			}
+		},
+		setCheatsAutosave() {
+			const cheatsChangedSaving = ++this.cheatsChanged;
+			if (!this.cheatsChangedSaving) {
+				this.clearCheatsAutosave();
+				this.cheatsChangedTimer = setTimeout(() => {
+					this.cheatsChangedSaving = true;
+					saveCheatsToFile().finally(() => {
+						this.cheatsChangedSaving = false;
+						this.cheatsChangedSaved = cheatsChangedSaving;
+						if (this.cheatsChanged > cheatsChangedSaving) {
+							this.setCheatsAutosave();
+						}
+					});
+				}, this.cheatsChangedTimeout);
+			}
+		},
 		setCheatValue(cheat, newValue) {
 			setCheatValue(cheat, newValue);
+			this.setCheatsAutosave();
 			if (CHEAT_REQUIRES_MAP.has(cheat)) {
 				for (const dependentCheat of CHEAT_REQUIRES_MAP.get(cheat)) {
 					this.updateCheatControls(dependentCheat);
@@ -581,6 +642,10 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			sc.menu.buttonInteract.removeButtonGroup(this.buttonGroup); // Make our button group inactive.
 			sc.menu.popBackCallback(); // Unregister the back button handling.
 			this.list.doStateTransition("HIDDEN"); // Animation the list.
+			if (this.cheatsChanged) {
+				this.clearCheatsAutosave();
+				saveCheatsToFile();
+			}
 		},
 		onBackButtonPress() {
 			// Pop our menu to go back up to the menu that created ours.
@@ -660,3 +725,4 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 	});
 	// END: Cheats GUI
 });
+})();
