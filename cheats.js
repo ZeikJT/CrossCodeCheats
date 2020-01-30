@@ -29,7 +29,7 @@ const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
 	return [cheat, defaultValue];
 }));
-// Adapdtors for getters and setters to ensure we can swap out the underlying structures easily.
+// Adaptors for getters and setters to ensure we can swap out the underlying structures easily.
 function getCheatValue(cheat) {
 	return cheatValues.get(cheat);
 }
@@ -40,6 +40,7 @@ function getCheatsObject() {
 	}, Object.create(null));
 }
 function setCheatValue(cheat, value) {
+	window[cheat] = value; // For non CCLoader implementations.
 	return cheatValues.set(cheat, value);
 }
 ig.baked = !0;
@@ -311,7 +312,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		return map;
 	}, new Map);
 	function getConfigFilePath() {
-		let prefix = "./";
+		let prefix = "./assets/js/";
 		if ("simplify" in window) {
 			const cheatsMod = simplify.getMod("Cheats");
 			if (cheatsMod) {
