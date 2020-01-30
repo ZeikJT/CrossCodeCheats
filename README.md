@@ -3,9 +3,11 @@ A CCLoader port of the cheats from the [fearlessrevolution forum](https://fearle
 
 # Install
 
-To install with [CCLoader](https://github.com/CCDirectLink/CCLoader) simply download and put the cheats folder into CrossCode/assets/mods.
+This mod requires [CCLoader](https://github.com/CCDirectLink/CCLoader) which you can either install manually or use the [CCLoader installer](https://github.com/CCDirectLink/ccloader-installer).
 
-If you want to install the cheats into the game directly without using CCLoader then you can simply copy and paste the contents of cheats.js and append it to the end of your CrossCode/assets/js/game.compiled.js file.
+Once you have CCLoader installed, you can install this mod by simply putting the downloaded CrossCodeCheats folder into `CrossCode/assets/mods`.
+
+If you want to install the cheats into the game directly without using CCLoader then you can simply copy and paste the contents of cheats.js and append it to the end of your `CrossCode/assets/js/game.compiled.js` file.
 
 # Images
 
