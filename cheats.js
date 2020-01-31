@@ -677,15 +677,17 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		cheatsButton: null,
 		init() {
 			this.parent();
-			this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), this.gameCodeButton.hook.size.x);
-			this.cheatsButton.setAlign(this.gameCodeButton.hook.align.x, this.gameCodeButton.hook.align.y);
-			this.cheatsButton.setPos(this.gameCodeButton.hook.pos.x, this.gameCodeButton.hook.pos.y + 28);
+			// Get the first button in the second column so we can position our button above it.
+			const firstButtonHook = this.buttonGroup.elements[1][0].hook;
+			this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), firstButtonHook.size.x);
+			this.cheatsButton.setAlign(firstButtonHook.align.x, firstButtonHook.align.y);
+			this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + 28);
 			this.cheatsButton.onButtonPress = () => {
 				// What menu should be entered when clicked.
 				sc.menu.setDirectMode(true, sc.MENU_SUBMENU.CHEATS);
 				sc.model.enterMenu(true);
 			};
-			this.cheatsButton.hook.transitions = this.gameCodeButton.hook.transitions;
+			this.cheatsButton.hook.transitions = firstButtonHook.transitions;
 			this.cheatsButton.doStateTransition("HIDDEN", true);
 			this.buttonGroup.insertFocusGui(this.cheatsButton, 1, 0);
 			this.insertChildGui(this.cheatsButton);
@@ -718,6 +720,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.parent();
 			this.addChildGui(this.cheatsButton);
 
+			// Get the first button in the first column so we can position our button above it.
 			const firstButtonHook = this.buttonGroup.elements[0][0].hook;
 			// Position our new Cheats button above the current ones.
 			this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + firstButtonHook.size.y + 16);
