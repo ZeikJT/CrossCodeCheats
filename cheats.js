@@ -295,7 +295,6 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			setProperties(LANG_EXTENSION, this.labels);
 		},
 	});
-	//*/
 	// END: Lang Extension
 	function isNewGamePlus() {
 		// This is the ONLY method in the game that checks for new game plus and returns a boolean...
@@ -678,7 +677,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 		init() {
 			this.parent();
 			// Get the first button in the second column so we can position our button above it.
-			const firstButtonHook = this.buttonGroup.elements[1][0].hook;
+			const firstButtonHook = this.buttonGroup.elements[1].find((value) => value).hook;
 			this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), firstButtonHook.size.x);
 			this.cheatsButton.setAlign(firstButtonHook.align.x, firstButtonHook.align.y);
 			this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + 28);
