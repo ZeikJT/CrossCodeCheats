@@ -6,6 +6,6 @@
 	"description": "This mod adds cheats to CrossCode.",
 	"ccmodDependencies": {
 		"ccloader": "^2.11.0",
-		"crosscode": "1.2.X"
+		"crosscode": "1.2 - 1.3"
 	}
 }
