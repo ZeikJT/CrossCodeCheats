@@ -343,7 +343,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 						}
 						case "SLIDER": {
 							const num = Number(value);
-							if (num !== NaN) {
+							if (!Number.isNaN(num)) {
 								const clamped = Math.max(cheatData.min, Math.min(cheatData.max, num));
 								setCheatValue(cheat, clamped);
 							}
