@@ -24,6 +24,8 @@ const CHEAT_CONFIG = [
 	["enemydropcheat",          {defaultValue: true, type: "CHECKBOX"}],
 	["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
 	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
+	["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
+	["jumphighermodifier",      {defaultValue: 5,   type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
@@ -147,9 +149,9 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				}
 				playerParams = sc.model.player.params;
 				actualCurrentHp = playerParams.currentHp;
-				if (invincible && playerParams.currentHp <= data.damage) {
+				if (invincible /*&& playerParams.currentHp <= data.damage*/) {
 					// If invincible is enabled we set hp to be above the incoming damage.
-					playerParams.currentHp = data.damage + 1;
+					playerParams.currentHp += data.damage;
 					hpChanged = true;
 				}
 			}
@@ -202,7 +204,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		reduceHp(amount, ...args) {
 			if (getCheatValue("invincible") && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
 				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
-				this.currentHp = amount + 1;
+				this.currentHp += amount;
 			}
 			this.parent(amount, ...args);
 		},
@@ -242,6 +244,61 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(...args);
 		},
 	});
+	var a = Vec2.create(), d = {};
+	var cheat_perform_jump = false;
+	ig.ActorEntity.inject({
+		_checkForUpwardJump() {
+			if (!this.isPlayer || !getCheatValue("jumphigher")) {
+				return this.parent();
+			}
+
+			var b = this.coll;
+			b = ig.getDirectionIndex(b.accelDir.x, b.accelDir.y, 8);
+			b = ig.getDirectionVel(b, 8, a);
+			e = ig.game.physics.initTraceResult(d);
+			if (!ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 0, ig.COLLTYPE.IGNORE))
+				return false;
+			e = ig.game.physics.initTraceResult(d);
+
+			var ret = !ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 19 * getCheatValue("jumphighermodifier"));
+
+			if(ret) {
+				cheat_perform_jump = this.secondJumpCheck;
+			}
+
+			return ret;
+		},
+        doJump(a,...args) {
+            if ((!this.isPlayer) ||
+				(!cheat_perform_jump) ||
+				(!getCheatValue("jumphigher"))) {
+				return this.parent(a,...args);
+            }
+
+            var old_value = getCheatValue("jumphighermodifier");
+            var base_jump_height = 19;
+
+            // adjust the height so Lea lands "kind of" exactly on top of the surface, else we will jump too high
+			var count = 0;
+			setCheatValue("jumphighermodifier", count);
+
+            while((!this._checkForUpwardJump()) && (count < old_value))
+			{
+				++count;
+                a += (base_jump_height * 2);
+				setCheatValue("jumphighermodifier", count);
+            }
+
+            setCheatValue("jumphighermodifier", old_value);
+
+			cheat_perform_jump = false;
+            return this.parent(a,...args);
+        },
+		doFloatJump(...args) {
+			cheat_perform_jump = false;
+		    return this.parent(...args);
+		},
+	});
 	// END: Cheats
 });
 ig.baked = !0;
@@ -275,7 +332,9 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"tradecheat": "Do Not Remove Items On Trade",
 					"xpcheat": "XP Cheats",
 					"xpmingain": "XP Min Gain",
-					"xpmultiplier": "XP Multiplier"
+					"xpmultiplier": "XP Multiplier",
+					"jumphigher": "Jump Higher",
+					"jumphighermodifier": "Jump Height Multiplier"
 				}
 			}
 		}
