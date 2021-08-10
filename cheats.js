@@ -31,6 +31,7 @@ const CHEAT_CONFIG = [
 	["unlimiteddashes",         {defaultValue: true, type: "CHECKBOX"}],
 	["runspeed",                {defaultValue: true, type: "CHECKBOX"}],
 	["runspeedmultiplier",      {defaultValue: 10,  type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
+	["maxresistance",           {defaultValue: true, type: "CHECKBOX"}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
@@ -82,6 +83,36 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return getCheatValue("xpcheat") ? Math.max(exp * getCheatValue("xpmultiplier"), getCheatValue("xpmingain")) : exp;
 		};
 	});
+	replaceProp(sc.PlayerLevelTools, "computeBaseParams", (originalComputeBaseParams) => {
+		return (a, ...args) => {
+			var ret = originalComputeBaseParams.call(sc.PlayerLevelTools, a, ...args);
+
+			if(getCheatValue("maxresistance")) {
+				a.elemFactor[0] = 2;
+				a.elemFactor[1] = 2;
+				a.elemFactor[2] = 2;
+				a.elemFactor[3] = 2;
+			}
+
+			return ret;
+		};
+	});
+
+	replaceProp(sc.PlayerLevelTools, "updateEquipStats", (originalUpdateEquipStats) => {
+		return (a, b, c) => {
+			var ret = originalUpdateEquipStats.call(sc.PlayerLevelTools, a, b, c);
+
+			if(getCheatValue("maxresistance")) {
+				b.elemFactor[0] = 2;
+				b.elemFactor[1] = 2;
+				b.elemFactor[2] = 2;
+				b.elemFactor[3] = 2;
+			}
+
+			return ret;
+		};
+	});
+
 	for (const bonus of Object.values(sc.ARENA_BONUS_OBJECTIVE)) {
 		replaceProp(bonus, "check", (originalCheck) => {
 			return (...args) => {
@@ -228,14 +259,6 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			}
 
 			return this.parent(a, b);
-		},
-	});
-	sc.Control.inject({
-		moveDir(b, ...args) {
-			var ret = this.parent(b, ...args);
-			//b.x *= 4;
-			//b.y *= 4;
-			return ret;
 		},
 	});
 	sc.CombatParams.inject({
@@ -406,7 +429,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)",
 					"unlimiteddashes": "Unlimited Dashing",
 					"runspeed": "Faster Running",
-					"runspeedmultiplier": "Running Multiplier (10 = 1.0)"
+					"runspeedmultiplier": "Running Multiplier (10 = 1.0)",
+					"maxresistance": "100% Element Resistances"
 
 				}
 			}
