@@ -28,6 +28,9 @@ const CHEAT_CONFIG = [
 	["jumphighermodifier",      {defaultValue: 5,   type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
 	["jumpfurther",             {defaultValue: 10,  type: "SLIDER", min: 10, max: 40,requires: ["jumphigher"]}],
 	["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
+	["unlimiteddashes",         {defaultValue: true, type: "CHECKBOX"}],
+	["runspeed",                {defaultValue: true, type: "CHECKBOX"}],
+	["runspeedmultiplier",      {defaultValue: 10,  type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
@@ -201,6 +204,39 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			getCheatValue("noactioncancelonhit") && cancelActionReplacer.restore();
 			return returnValue;
 		},
+		startDash(...args) {
+			var cheat = getCheatValue("unlimiteddashes");
+
+			if(cheat)
+			{
+				this.dashCount = 0;
+			}
+
+			var result = this.parent(...args);
+
+			if(cheat)
+			{
+				this.dashCount = 0;
+			}
+
+			return result;
+		},
+		updatePlayerMovement(a, b) {
+			if(getCheatValue("runspeed"))
+			{
+				b.relativeVel *= getCheatValue("runspeedmultiplier") / 10;
+			}
+
+			return this.parent(a, b);
+		},
+	});
+	sc.Control.inject({
+		moveDir(b, ...args) {
+			var ret = this.parent(b, ...args);
+			//b.x *= 4;
+			//b.y *= 4;
+			return ret;
+		},
 	});
 	sc.CombatParams.inject({
 		reduceHp(amount, ...args) {
@@ -281,7 +317,6 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				a *= (getCheatValue("jumpfurther") / 10);
 				return this.parent(a,...args);
 			}
-
             var old_value = getCheatValue("jumphighermodifier");
             var base_jump_height = 19;
 
@@ -367,8 +402,12 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"xpmultiplier": "XP Multiplier",
 					"jumphigher": "Jump Higher",
 					"jumphighermodifier": "Jump Height Multiplier",
-					"jumpfurther": "Jump Further Multiplier",
-					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)"
+					"jumpfurther": "Jump Further Multiplier (10 = 1.0)",
+					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)",
+					"unlimiteddashes": "Unlimited Dashing",
+					"runspeed": "Faster Running",
+					"runspeedmultiplier": "Running Multiplier (10 = 1.0)"
+
 				}
 			}
 		}
