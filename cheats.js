@@ -26,6 +26,7 @@ const CHEAT_CONFIG = [
 	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
 	["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
 	["jumphighermodifier",      {defaultValue: 5,   type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
+	["jumpfurther",             {defaultValue: 10,  type: "SLIDER", min: 10, max: 40,requires: ["jumphigher"]}],
 	["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
@@ -271,10 +272,15 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		},
         doJump(a,...args) {
             if ((!this.isPlayer) ||
-				(!cheat_perform_jump) ||
 				(!getCheatValue("jumphigher"))) {
 				return this.parent(a,...args);
             }
+
+            if(!cheat_perform_jump)
+			{
+				a *= (getCheatValue("jumpfurther") / 10);
+				return this.parent(a,...args);
+			}
 
             var old_value = getCheatValue("jumphighermodifier");
             var base_jump_height = 19;
@@ -361,6 +367,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"xpmultiplier": "XP Multiplier",
 					"jumphigher": "Jump Higher",
 					"jumphighermodifier": "Jump Height Multiplier",
+					"jumpfurther": "Jump Further Multiplier",
 					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)"
 				}
 			}
