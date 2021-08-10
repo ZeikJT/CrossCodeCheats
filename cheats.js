@@ -25,13 +25,14 @@ const CHEAT_CONFIG = [
 	["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
 	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
 	["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
-	["jumphighermodifier",      {defaultValue: 5,   type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
-	["jumpfurther",             {defaultValue: 10,  type: "SLIDER", min: 10, max: 40,requires: ["jumphigher"]}],
+	["jumphighermodifier",      {defaultValue: 5,    type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
+	["jumpfurther",             {defaultValue: 10,   type: "SLIDER", min: 10, max: 40,requires: ["jumphigher"]}],
 	["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
 	["unlimiteddashes",         {defaultValue: true, type: "CHECKBOX"}],
 	["runspeed",                {defaultValue: true, type: "CHECKBOX"}],
-	["runspeedmultiplier",      {defaultValue: 10,  type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
+	["runspeedmultiplier",      {defaultValue: 10,   type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
 	["maxresistance",           {defaultValue: true, type: "CHECKBOX"}],
+	["instantaim",              {defaultValue: true, type: "CHECKBOX"}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
@@ -53,7 +54,7 @@ function setCheatValue(cheat, value) {
 	return cheatValues.set(cheat, value);
 }
 ig.baked = !0;
-ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model").defines(function () {
+ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model", "game.feature.player.entities.crosshair").defines(function () {
 	// START: Utilities
 	function replaceProp(obj, prop, replaceFunc) {
 		obj[prop] = replaceFunc(obj[prop]);
@@ -156,6 +157,22 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				return 0;
 			}
 			return this.parent(...args);
+		},
+	});
+	ig.ENTITY.Crosshair.inject({
+		init(...args) {
+			var ret = this.parent(...args);
+			if(getCheatValue("instantaim")) {
+				this.speedFactor = 99;
+			}
+			return ret;
+		},
+		setSpeedFactor(...args) {
+			var ret = this.parent(...args);
+			if(getCheatValue("instantaim")) {
+				this.speedFactor = 99;
+			}
+			return ret;
 		},
 	});
 	sc.Arena.inject({
@@ -430,8 +447,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"unlimiteddashes": "Unlimited Dashing",
 					"runspeed": "Faster Running",
 					"runspeedmultiplier": "Running Multiplier (10 = 1.0)",
-					"maxresistance": "100% Element Resistances"
-
+					"maxresistance": "100% Element Resistances",
+					"instantaim": "Instant Aim"
 				}
 			}
 		}
