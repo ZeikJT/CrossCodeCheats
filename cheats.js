@@ -26,6 +26,7 @@ const CHEAT_CONFIG = [
 	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
 	["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
 	["jumphighermodifier",      {defaultValue: 5,   type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
+	["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
 ];
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
@@ -299,6 +300,31 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 		    return this.parent(...args);
 		},
 	});
+	sc.TitleScreenGui.inject({
+		modelChanged(c, d) {
+			if (getCheatValue("skipintro")) {
+				if (c == sc.model && d == sc.GAME_MODEL_MSG.STATE_CHANGED) {
+					var e = c.isTitle() ? 'DEFAULT' : 'HIDDEN';
+					if (this.hook.currentStateName != e) {
+						if (e == 'DEFAULT') {
+							if (!window.IG_GAME_DEBUG) {
+								if (!this.isPostInit) {
+									this.isPostInit = true;
+									this.postInit();
+								}
+								this.buttons.hide(true);
+								ig.bgm.clear('MEDIUM');
+								this._introDone();
+								this.doStateTransition(e, true);
+								return;
+							}
+						}
+					}
+				}
+			}
+			return this.parent(c, d);
+		}
+	});
 	// END: Cheats
 });
 ig.baked = !0;
@@ -334,7 +360,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"xpmingain": "XP Min Gain",
 					"xpmultiplier": "XP Multiplier",
 					"jumphigher": "Jump Higher",
-					"jumphighermodifier": "Jump Height Multiplier"
+					"jumphighermodifier": "Jump Height Multiplier",
+					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)"
 				}
 			}
 		}
