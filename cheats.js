@@ -410,15 +410,6 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(c, d);
 		}
 	});
-	sc.CombatParams.inject({
-		reduceHp(amount, ...args) {
-			if (getCheatValue("invincible") && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
-				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
-				this.currentHp += amount;
-			}
-			this.parent(amount, ...args);
-		},
-	});
 	sc.BounceSwitchGroups.inject({
 		resetGroup(...args) {
 			if(getCheatValue("dontresetpuzzles"))
