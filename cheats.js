@@ -33,7 +33,9 @@ const CHEAT_CONFIG = [
 	["runspeedmultiplier",      {defaultValue: 10,   type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
 	["maxresistance",           {defaultValue: true, type: "CHECKBOX"}],
 	["instantaim",              {defaultValue: true, type: "CHECKBOX"}],
+	["dontresetpuzzles",        {defaultValue: true, type: "CHECKBOX"}],
 ];
+
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
 	window[cheat] = defaultValue; // For non CCLoader implementations.
@@ -54,7 +56,7 @@ function setCheatValue(cheat, value) {
 	return cheatValues.set(cheat, value);
 }
 ig.baked = !0;
-ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model", "game.feature.player.entities.crosshair").defines(function () {
+ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model", "game.feature.player.entities.crosshair","game.feature.puzzle.entities.bounce-switch").defines(function () {
 	// START: Utilities
 	function replaceProp(obj, prop, replaceFunc) {
 		obj[prop] = replaceFunc(obj[prop]);
@@ -93,6 +95,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				a.elemFactor[1] = 2;
 				a.elemFactor[2] = 2;
 				a.elemFactor[3] = 2;
+				//a.defense = 9e150;
 			}
 
 			return ret;
@@ -108,6 +111,7 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				b.elemFactor[1] = 2;
 				b.elemFactor[2] = 2;
 				b.elemFactor[3] = 2;
+				//b.defense = 9e150;
 			}
 
 			return ret;
@@ -406,6 +410,24 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(c, d);
 		}
 	});
+	sc.CombatParams.inject({
+		reduceHp(amount, ...args) {
+			if (getCheatValue("invincible") && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
+				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
+				this.currentHp += amount;
+			}
+			this.parent(amount, ...args);
+		},
+	});
+	sc.BounceSwitchGroups.inject({
+		resetGroup(...args) {
+			if(getCheatValue("dontresetpuzzles"))
+			{
+				return null;
+			}
+			return this.parent(...args);
+		},
+	});
 	// END: Cheats
 });
 ig.baked = !0;
@@ -448,7 +470,8 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"runspeed": "Faster Running",
 					"runspeedmultiplier": "Running Multiplier (10 = 1.0)",
 					"maxresistance": "100% Element Resistances",
-					"instantaim": "Instant Aim"
+					"instantaim": "Instant Aim",
+					"dontresetpuzzles": "Do Not Reset Puzzle Elements on Misfire"
 				}
 			}
 		}
