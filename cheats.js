@@ -1,39 +1,39 @@
 // Written against CrossCode V1.2.0-5
 (() => {
 const CHEAT_CONFIG = [
-	["xpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
-	["xpmultiplier",            {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["xpcheat"]}],
-	["xpmingain",               {defaultValue: 1,    type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
-	["creditcheat",             {defaultValue: true, type: "CHECKBOX"}],
-	["creditmultiplier",        {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["creditcheat"]}],
-	["donotremovecredit",       {defaultValue: true, type: "CHECKBOX"}],
+	["xpcheat",				 {defaultValue: true, type: "CHECKBOX"}],
+	["xpmultiplier",			{defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["xpcheat"]}],
+	["xpmingain",			   {defaultValue: 1,	type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
+	["creditcheat",			 {defaultValue: true, type: "CHECKBOX"}],
+	["creditmultiplier",		{defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["creditcheat"]}],
+	["donotremovecredit",	   {defaultValue: true, type: "CHECKBOX"}],
 	["donotremovearenacoins",   {defaultValue: true, type: "CHECKBOX"}],
-	["arenaalwaysbonuses",      {defaultValue: true, type: "CHECKBOX"}],
-	["arenaperfectchain",       {defaultValue: true, type: "CHECKBOX"}],
-	["arenanodamagepenalty",    {defaultValue: true, type: "CHECKBOX"}],
-	["arenaalwaysplat",         {defaultValue: true, type: "CHECKBOX"}],
-	["ignorespcheat",           {defaultValue: true, type: "CHECKBOX"}],
-	["overheatelim",            {defaultValue: true, type: "CHECKBOX"}],
-	["invincible",              {defaultValue: true, type: "CHECKBOX"}],
-	["cpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
-	["consumableinfinite",      {defaultValue: true, type: "CHECKBOX"}],
-	["consumablenocooldown",    {defaultValue: true, type: "CHECKBOX"}],
-	["noknockbackonhit",        {defaultValue: true, type: "CHECKBOX"}],
-	["noactioncancelonhit",     {defaultValue: true, type: "CHECKBOX"}],
-	["tradecheat",              {defaultValue: true, type: "CHECKBOX"}],
-	["enemydropcheat",          {defaultValue: true, type: "CHECKBOX"}],
-	["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
+	["arenaalwaysbonuses",	  {defaultValue: true, type: "CHECKBOX"}],
+	["arenaperfectchain",	   {defaultValue: true, type: "CHECKBOX"}],
+	["arenanodamagepenalty",	{defaultValue: true, type: "CHECKBOX"}],
+	["arenaalwaysplat",		 {defaultValue: true, type: "CHECKBOX"}],
+	["ignorespcheat",		   {defaultValue: true, type: "CHECKBOX"}],
+	["overheatelim",			{defaultValue: true, type: "CHECKBOX"}],
+	["invincible",			  {defaultValue: true, type: "CHECKBOX"}],
+	["cpcheat",				 {defaultValue: true, type: "CHECKBOX"}],
+	["consumableinfinite",	  {defaultValue: true, type: "CHECKBOX"}],
+	["consumablenocooldown",	{defaultValue: true, type: "CHECKBOX"}],
+	["noknockbackonhit",		{defaultValue: true, type: "CHECKBOX"}],
+	["noactioncancelonhit",	 {defaultValue: true, type: "CHECKBOX"}],
+	["tradecheat",			  {defaultValue: true, type: "CHECKBOX"}],
+	["enemydropcheat",		  {defaultValue: true, type: "CHECKBOX"}],
+	["plantdropcheat",		  {defaultValue: true, type: "CHECKBOX"}],
 	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
-	["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
-	["jumphighermodifier",      {defaultValue: 5,    type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
-	["jumpfurther",             {defaultValue: 10,   type: "SLIDER", min: 10, max: 40,requires: ["jumphigher"]}],
-	["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
-	["unlimiteddashes",         {defaultValue: true, type: "CHECKBOX"}],
-	["runspeed",                {defaultValue: true, type: "CHECKBOX"}],
-	["runspeedmultiplier",      {defaultValue: 10,   type: "SLIDER", min: 1, max: 100,requires: ["runspeed"]}],
-	["maxresistance",           {defaultValue: true, type: "CHECKBOX"}],
-	["instantaim",              {defaultValue: true, type: "CHECKBOX"}],
-	["dontresetpuzzles",        {defaultValue: true, type: "CHECKBOX"}],
+	["jumphigher",			  {defaultValue: true, type: "CHECKBOX"}],
+	["jumphighermodifier",	  {defaultValue: 5,	type: "SLIDER", min: 1, max: 10,  requires: ["jumphigher"]}],
+	["jumpfurther",			 {defaultValue: 10,   type: "SLIDER", min: 10, max: 40, requires: ["jumphigher"]}],
+	["skipintro",			   {defaultValue: true, type: "CHECKBOX"}],
+	["unlimiteddashes",		 {defaultValue: true, type: "CHECKBOX"}],
+	["runspeed",				{defaultValue: true, type: "CHECKBOX"}],
+	["runspeedmultiplier",	  {defaultValue: 10,   type: "SLIDER", min: 1, max: 100, requires: ["runspeed"]}],
+	["maxresistance",		   {defaultValue: true, type: "CHECKBOX"}],
+	["instantaim",			  {defaultValue: true, type: "CHECKBOX"}],
+	["dontresetpuzzles",		{defaultValue: true, type: "CHECKBOX"}],
 ];
 
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
@@ -231,6 +231,13 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			}
 			return this.parent(...args);
 		},
+		registerCup(a, ...args) {
+			var val = this.parent(a, ...args);
+			if(a === 'rookie-cup') {
+				this.parent('console-cup-1', 3000);
+			}
+			return val;
+		},
 	});
 	const getSpReplacer = toggleReplacer(sc.CombatParams.prototype, "getSp", () => function() {return this.maxSp});
 	const cancelActionReplacer = toggleReplacer(ig.ENTITY.Player.prototype, "cancelAction", () => noOp);
@@ -326,7 +333,9 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(...args);
 		},
 	});
-	var a = Vec2.create(), d = {};
+
+	// probably global for performance reasons, just copied from game src
+	var direction_vec = Vec2.create(), unknown_init_trace_result_global_var = {};
 	var cheat_perform_jump = false;
 	ig.ActorEntity.inject({
 		_checkForUpwardJump() {
@@ -336,11 +345,11 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 
 			var b = this.coll;
 			b = ig.getDirectionIndex(b.accelDir.x, b.accelDir.y, 8);
-			b = ig.getDirectionVel(b, 8, a);
-			e = ig.game.physics.initTraceResult(d);
+			b = ig.getDirectionVel(b, 8, direction_vec);
+			e = ig.game.physics.initTraceResult(unknown_init_trace_result_global_var);
 			if (!ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 0, ig.COLLTYPE.IGNORE))
 				return false;
-			e = ig.game.physics.initTraceResult(d);
+			e = ig.game.physics.initTraceResult(unknown_init_trace_result_global_var);
 
 			var ret = !ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 19 * getCheatValue("jumphighermodifier"));
 
@@ -350,39 +359,39 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 
 			return ret;
 		},
-        doJump(a,...args) {
-            if ((!this.isPlayer) ||
+		doJump(a,...args) {
+			if ((!this.isPlayer) ||
 				(!getCheatValue("jumphigher"))) {
 				return this.parent(a,...args);
-            }
+			}
 
-            if(!cheat_perform_jump)
+			if(!cheat_perform_jump)
 			{
 				a *= (getCheatValue("jumpfurther") / 10);
 				return this.parent(a,...args);
 			}
-            var old_value = getCheatValue("jumphighermodifier");
-            var base_jump_height = 19;
+			var old_value = getCheatValue("jumphighermodifier");
+			var base_jump_height = 19;
 
-            // adjust the height so Lea lands "kind of" exactly on top of the surface, else we will jump too high
+			// adjust the height so Lea lands "kind of" exactly on top of the surface, else we will jump too high
 			var count = 0;
 			setCheatValue("jumphighermodifier", count);
 
-            while((!this._checkForUpwardJump()) && (count < old_value))
+			while((!this._checkForUpwardJump()) && (count < old_value))
 			{
 				++count;
-                a += (base_jump_height * 2);
+				a += (base_jump_height * 2);
 				setCheatValue("jumphighermodifier", count);
-            }
+			}
 
-            setCheatValue("jumphighermodifier", old_value);
+			setCheatValue("jumphighermodifier", old_value);
 
 			cheat_perform_jump = false;
-            return this.parent(a,...args);
-        },
+			return this.parent(a,...args);
+		},
 		doFloatJump(...args) {
 			cheat_perform_jump = false;
-		    return this.parent(...args);
+			return this.parent(...args);
 		},
 	});
 	sc.TitleScreenGui.inject({
