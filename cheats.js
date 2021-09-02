@@ -231,13 +231,6 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			}
 			return this.parent(...args);
 		},
-		registerCup(a, ...args) {
-			var val = this.parent(a, ...args);
-			if(a === 'rookie-cup') {
-				this.parent('console-cup-1', 3000);
-			}
-			return val;
-		},
 	});
 	const getSpReplacer = toggleReplacer(sc.CombatParams.prototype, "getSp", () => function() {return this.maxSp});
 	const cancelActionReplacer = toggleReplacer(ig.ENTITY.Player.prototype, "cancelAction", () => noOp);
