@@ -1,30 +1,41 @@
 // Written against CrossCode V1.2.0-5
 (() => {
-const CHEAT_CONFIG = [
-	["xpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
-	["xpmultiplier",            {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["xpcheat"]}],
-	["xpmingain",               {defaultValue: 1,    type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
-	["creditcheat",             {defaultValue: true, type: "CHECKBOX"}],
-	["creditmultiplier",        {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["creditcheat"]}],
-	["donotremovecredit",       {defaultValue: true, type: "CHECKBOX"}],
-	["donotremovearenacoins",   {defaultValue: true, type: "CHECKBOX"}],
-	["arenaalwaysbonuses",      {defaultValue: true, type: "CHECKBOX"}],
-	["arenaperfectchain",       {defaultValue: true, type: "CHECKBOX"}],
-	["arenanodamagepenalty",    {defaultValue: true, type: "CHECKBOX"}],
-	["arenaalwaysplat",         {defaultValue: true, type: "CHECKBOX"}],
-	["ignorespcheat",           {defaultValue: true, type: "CHECKBOX"}],
-	["overheatelim",            {defaultValue: true, type: "CHECKBOX"}],
-	["invincible",              {defaultValue: true, type: "CHECKBOX"}],
-	["cpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
-	["consumableinfinite",      {defaultValue: true, type: "CHECKBOX"}],
-	["consumablenocooldown",    {defaultValue: true, type: "CHECKBOX"}],
-	["noknockbackonhit",        {defaultValue: true, type: "CHECKBOX"}],
-	["noactioncancelonhit",     {defaultValue: true, type: "CHECKBOX"}],
-	["tradecheat",              {defaultValue: true, type: "CHECKBOX"}],
-	["enemydropcheat",          {defaultValue: true, type: "CHECKBOX"}],
-	["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
-	["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
+	const CHEAT_CONFIG = [
+		["xpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
+		["xpmultiplier",            {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["xpcheat"]}],
+		["xpmingain",               {defaultValue: 1,    type: "SLIDER", min: 0, max: 1000, requires: ["xpcheat"]}],
+		["creditcheat",             {defaultValue: true, type: "CHECKBOX"}],
+		["creditmultiplier",        {defaultValue: 10,   type: "SLIDER", min: 0, max: 100,  requires: ["creditcheat"]}],
+		["donotremovecredit",       {defaultValue: true, type: "CHECKBOX"}],
+		["donotremovearenacoins",   {defaultValue: true, type: "CHECKBOX"}],
+		["arenaalwaysbonuses",      {defaultValue: true, type: "CHECKBOX"}],
+		["arenaperfectchain",       {defaultValue: true, type: "CHECKBOX"}],
+		["arenanodamagepenalty",    {defaultValue: true, type: "CHECKBOX"}],
+		["arenaalwaysplat",         {defaultValue: true, type: "CHECKBOX"}],
+		["ignorespcheat",           {defaultValue: true, type: "CHECKBOX"}],
+		["overheatelim",            {defaultValue: true, type: "CHECKBOX"}],
+		["invincible",              {defaultValue: true, type: "CHECKBOX"}],
+		["cpcheat",                 {defaultValue: true, type: "CHECKBOX"}],
+		["consumableinfinite",      {defaultValue: true, type: "CHECKBOX"}],
+		["consumablenocooldown",    {defaultValue: true, type: "CHECKBOX"}],
+		["noknockbackonhit",        {defaultValue: true, type: "CHECKBOX"}],
+		["noactioncancelonhit",     {defaultValue: true, type: "CHECKBOX"}],
+		["tradecheat",              {defaultValue: true, type: "CHECKBOX"}],
+		["enemydropcheat",          {defaultValue: true, type: "CHECKBOX"}],
+		["plantdropcheat",          {defaultValue: true, type: "CHECKBOX"}],
+		["donotremovetrophypoints", {defaultValue: true, type: "CHECKBOX", preconditions: ["NEW_GAME_PLUS"]}],
+		["jumphigher",              {defaultValue: true, type: "CHECKBOX"}],
+		["jumphighermodifier",      {defaultValue: 5,    type: "SLIDER", min: 1,  max: 10,  requires: ["jumphigher"]}],
+		["jumpfurther",             {defaultValue: 10,   type: "SLIDER", min: 10, max: 40,  requires: ["jumphigher"]}],
+		["skipintro",               {defaultValue: true, type: "CHECKBOX"}],
+		["unlimiteddashes",         {defaultValue: true, type: "CHECKBOX"}],
+		["runspeed",                {defaultValue: true, type: "CHECKBOX"}],
+		["runspeedmultiplier",      {defaultValue: 10,   type: "SLIDER", min: 1,  max: 100, requires: ["runspeed"]}],
+		["maxresistance",           {defaultValue: true, type: "CHECKBOX"}],
+		["instantaim",              {defaultValue: true, type: "CHECKBOX"}],
+		["dontresetpuzzles",        {defaultValue: true, type: "CHECKBOX"}],
 ];
+
 const CHEAT_CONFIG_MAP = new Map(CHEAT_CONFIG);
 const cheatValues = new Map(CHEAT_CONFIG.map(([cheat, {defaultValue}]) => {
 	window[cheat] = defaultValue; // For non CCLoader implementations.
@@ -45,7 +56,7 @@ function setCheatValue(cheat, value) {
 	return cheatValues.set(cheat, value);
 }
 ig.baked = !0;
-ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model").defines(function () {
+ig.module("cheats").requires("game.feature.player.player-level", "game.feature.player.player-model", "game.feature.arena.arena", "game.feature.arena.arena-bonus-objectives", "game.feature.player.entities.player", "game.feature.combat.model.combat-params", "game.feature.trade.trade-model", "game.feature.combat.model.enemy-type", "game.feature.model.game-model", "game.feature.combat.entities.enemy", "game.feature.puzzle.entities.item-destruct", "game.feature.new-game.new-game-model", "game.feature.player.entities.crosshair","game.feature.puzzle.entities.bounce-switch").defines(function () {
 	// START: Utilities
 	function replaceProp(obj, prop, replaceFunc) {
 		obj[prop] = replaceFunc(obj[prop]);
@@ -75,6 +86,38 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return getCheatValue("xpcheat") ? Math.max(exp * getCheatValue("xpmultiplier"), getCheatValue("xpmingain")) : exp;
 		};
 	});
+	replaceProp(sc.PlayerLevelTools, "computeBaseParams", (originalComputeBaseParams) => {
+		return (a, ...args) => {
+			var ret = originalComputeBaseParams.call(sc.PlayerLevelTools, a, ...args);
+
+			if(getCheatValue("maxresistance")) {
+				a.elemFactor[0] = 2;
+				a.elemFactor[1] = 2;
+				a.elemFactor[2] = 2;
+				a.elemFactor[3] = 2;
+				//a.defense = 9e150;
+			}
+
+			return ret;
+		};
+	});
+
+	replaceProp(sc.PlayerLevelTools, "updateEquipStats", (originalUpdateEquipStats) => {
+		return (a, b, c) => {
+			var ret = originalUpdateEquipStats.call(sc.PlayerLevelTools, a, b, c);
+
+			if(getCheatValue("maxresistance")) {
+				b.elemFactor[0] = 2;
+				b.elemFactor[1] = 2;
+				b.elemFactor[2] = 2;
+				b.elemFactor[3] = 2;
+				//b.defense = 9e150;
+			}
+
+			return ret;
+		};
+	});
+
 	for (const bonus of Object.values(sc.ARENA_BONUS_OBJECTIVE)) {
 		replaceProp(bonus, "check", (originalCheck) => {
 			return (...args) => {
@@ -120,6 +163,22 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(...args);
 		},
 	});
+	ig.ENTITY.Crosshair.inject({
+		init(...args) {
+			var ret = this.parent(...args);
+			if(getCheatValue("instantaim")) {
+				this.speedFactor = 99;
+			}
+			return ret;
+		},
+		setSpeedFactor(...args) {
+			var ret = this.parent(...args);
+			if(getCheatValue("instantaim")) {
+				this.speedFactor = 99;
+			}
+			return ret;
+		},
+	});
 	sc.Arena.inject({
 		removeArenaCoins(amount, ...args) {
 			this.parent(amount, ...args);
@@ -147,9 +206,9 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 				}
 				playerParams = sc.model.player.params;
 				actualCurrentHp = playerParams.currentHp;
-				if (invincible && playerParams.currentHp <= data.damage) {
+				if (invincible /*&& playerParams.currentHp <= data.damage*/) {
 					// If invincible is enabled we set hp to be above the incoming damage.
-					playerParams.currentHp = data.damage + 1;
+					playerParams.currentHp += data.damage;
 					hpChanged = true;
 				}
 			}
@@ -197,12 +256,37 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			getCheatValue("noactioncancelonhit") && cancelActionReplacer.restore();
 			return returnValue;
 		},
+		startDash(...args) {
+			var cheat = getCheatValue("unlimiteddashes");
+
+			if(cheat)
+			{
+				this.dashCount = 0;
+			}
+
+			var result = this.parent(...args);
+
+			if(cheat)
+			{
+				this.dashCount = 0;
+			}
+
+			return result;
+		},
+		updatePlayerMovement(a, b) {
+			if(getCheatValue("runspeed"))
+			{
+				b.relativeVel *= getCheatValue("runspeedmultiplier") / 10;
+			}
+
+			return this.parent(a, b);
+		},
 	});
 	sc.CombatParams.inject({
 		reduceHp(amount, ...args) {
 			if (getCheatValue("invincible") && this.combatant.party === sc.COMBATANT_PARTY.PLAYER && this.currentHp <= amount) {
 				// If invincible is enabled and the player health would fall to 0 or below we set health to be higher than damage.
-				this.currentHp = amount + 1;
+				this.currentHp += amount;
 			}
 			this.parent(amount, ...args);
 		},
@@ -242,6 +326,101 @@ ig.module("cheats").requires("game.feature.player.player-level", "game.feature.p
 			return this.parent(...args);
 		},
 	});
+
+	// probably global for performance reasons, just copied from game src
+	var direction_vec = Vec2.create(), unknown_init_trace_result_global_var = {};
+	var cheat_perform_jump = false;
+	ig.ActorEntity.inject({
+		_checkForUpwardJump() {
+			if (!this.isPlayer || !getCheatValue("jumphigher")) {
+				return this.parent();
+			}
+
+			var b = this.coll;
+			b = ig.getDirectionIndex(b.accelDir.x, b.accelDir.y, 8);
+			b = ig.getDirectionVel(b, 8, direction_vec);
+			e = ig.game.physics.initTraceResult(unknown_init_trace_result_global_var);
+			if (!ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 0, ig.COLLTYPE.IGNORE))
+				return false;
+			e = ig.game.physics.initTraceResult(unknown_init_trace_result_global_var);
+
+			var ret = !ig.game.traceEntity(e, this, b.x, b.y, 0, 0, 19 * getCheatValue("jumphighermodifier"));
+
+			if(ret) {
+				cheat_perform_jump = this.secondJumpCheck;
+			}
+
+			return ret;
+		},
+		doJump(a,...args) {
+			if ((!this.isPlayer) ||
+				(!getCheatValue("jumphigher"))) {
+				return this.parent(a,...args);
+			}
+
+			if(!cheat_perform_jump)
+			{
+				a *= (getCheatValue("jumpfurther") / 10);
+				return this.parent(a,...args);
+			}
+			var old_value = getCheatValue("jumphighermodifier");
+			var base_jump_height = 19;
+
+			// adjust the height so Lea lands "kind of" exactly on top of the surface, else we will jump too high
+			var count = 0;
+			setCheatValue("jumphighermodifier", count);
+
+			while((!this._checkForUpwardJump()) && (count < old_value))
+			{
+				++count;
+				a += (base_jump_height * 2);
+				setCheatValue("jumphighermodifier", count);
+			}
+
+			setCheatValue("jumphighermodifier", old_value);
+
+			cheat_perform_jump = false;
+			return this.parent(a,...args);
+		},
+		doFloatJump(...args) {
+			cheat_perform_jump = false;
+			return this.parent(...args);
+		},
+	});
+	sc.TitleScreenGui.inject({
+		modelChanged(c, d) {
+			if (getCheatValue("skipintro")) {
+				if (c == sc.model && d == sc.GAME_MODEL_MSG.STATE_CHANGED) {
+					var e = c.isTitle() ? 'DEFAULT' : 'HIDDEN';
+					if (this.hook.currentStateName != e) {
+						if (e == 'DEFAULT') {
+							if (!window.IG_GAME_DEBUG) {
+								if (!this.isPostInit) {
+									this.isPostInit = true;
+									this.postInit();
+								}
+								this.buttons.hide(true);
+								ig.bgm.clear('MEDIUM');
+								this._introDone();
+								this.doStateTransition(e, true);
+								return;
+							}
+						}
+					}
+				}
+			}
+			return this.parent(c, d);
+		}
+	});
+	sc.BounceSwitchGroups.inject({
+		resetGroup(...args) {
+			if(getCheatValue("dontresetpuzzles"))
+			{
+				return null;
+			}
+			return this.parent(...args);
+		},
+	});
 	// END: Cheats
 });
 ig.baked = !0;
@@ -275,7 +454,17 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 					"tradecheat": "Do Not Remove Items On Trade",
 					"xpcheat": "XP Cheats",
 					"xpmingain": "XP Min Gain",
-					"xpmultiplier": "XP Multiplier"
+					"xpmultiplier": "XP Multiplier",
+					"jumphigher": "Jump Higher",
+					"jumphighermodifier": "Jump Height Multiplier",
+					"jumpfurther": "Jump Further Multiplier (10 = 1.0)",
+					"skipintro": "Skip Intro Screen (readonly, can only be changed manually in cheats.js)",
+					"unlimiteddashes": "Unlimited Dashing",
+					"runspeed": "Faster Running",
+					"runspeedmultiplier": "Running Multiplier (10 = 1.0)",
+					"maxresistance": "100% Element Resistances",
+					"instantaim": "Instant Aim",
+					"dontresetpuzzles": "Do Not Reset Puzzle Elements on Misfire"
 				}
 			}
 		}
