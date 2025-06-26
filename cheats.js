@@ -861,6 +861,12 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			return this.parent.apply(this, arguments);
 		},
 	});
+
+	function enterCheats() {
+		sc.menu.setDirectMode(true, sc.MENU_SUBMENU.CHEATS);
+		sc.model.enterMenu(true);
+	}
+
 	sc.TitleScreenButtonGui.inject({
 		cheatsButton: null,
 		init() {
@@ -872,8 +878,7 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + 28);
 			this.cheatsButton.onButtonPress = () => {
 				// What menu should be entered when clicked.
-				sc.menu.setDirectMode(true, sc.MENU_SUBMENU.CHEATS);
-				sc.model.enterMenu(true);
+				enterCheats();
 			};
 			this.cheatsButton.hook.transitions = firstButtonHook.transitions;
 			this.cheatsButton.doStateTransition("HIDDEN", true);
@@ -889,33 +894,45 @@ ig.module("cheats-gui").requires("game.feature.gui.screen.title-screen", "game.f
 			this.cheatsButton.doStateTransition("HIDDEN", timingBoolean);
 		},
 	});
-	sc.PauseScreenGui.inject({
-		cheatsButton: null,
-		init() {
-			this.parent();
-			// Create our new Cheats menu button.
-			this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), sc.BUTTON_DEFAULT_WIDTH);
-			this.cheatsButton.setAlign(ig.GUI_ALIGN.X_RIGHT, ig.GUI_ALIGN.Y_BOTTOM);
-			this.cheatsButton.onButtonPress = () => {
-				// What menu should be entered when clicked.
-				sc.menu.setDirectMode(true, sc.MENU_SUBMENU.CHEATS);
-				sc.model.enterMenu(true);
-			};
-			this.insertChildGui(this.cheatsButton);
-		},
-		updateButtons() {
-			this.removeChildGui(this.cheatsButton);
-			this.parent();
-			this.addChildGui(this.cheatsButton);
 
-			// Get the first button in the first column so we can position our button above it.
-			const firstButtonHook = this.buttonGroup.elements[0][0].hook;
-			// Position our new Cheats button above the current ones.
-			this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + firstButtonHook.size.y + 16);
-			// Set it to be first in keyboard order, bump the others down.
-			this.buttonGroup.insertFocusGui(this.cheatsButton, 0, 0);
-		},
-	});
+	if (window.nax && window.nax.ccuilib) {
+		nax.ccuilib.pauseScreen.addButton({
+				text: '',
+				onPress() {
+					enterCheats();
+				},
+				onShow(button) {
+					button.setText(ig.lang.get("sc.cheats.title"), true);
+				}
+			});
+	} else {
+		sc.PauseScreenGui.inject({
+			cheatsButton: null,
+			init() {
+				this.parent();
+				// Create our new Cheats menu button.
+				this.cheatsButton = new sc.ButtonGui(ig.lang.get("sc.cheats.title"), sc.BUTTON_DEFAULT_WIDTH);
+				this.cheatsButton.setAlign(ig.GUI_ALIGN.X_RIGHT, ig.GUI_ALIGN.Y_BOTTOM);
+				this.cheatsButton.onButtonPress = () => {
+					// What menu should be entered when clicked.
+					enterCheats();
+				};
+				this.insertChildGui(this.cheatsButton);
+			},
+			updateButtons() {
+				this.removeChildGui(this.cheatsButton);
+				this.parent();
+				this.addChildGui(this.cheatsButton);
+
+				// Get the first button in the first column so we can position our button above it.
+				const firstButtonHook = this.buttonGroup.elements[0][0].hook;
+				// Position our new Cheats button above the current ones.
+				this.cheatsButton.setPos(firstButtonHook.pos.x, firstButtonHook.pos.y + firstButtonHook.size.y + 16);
+				// Set it to be first in keyboard order, bump the others down.
+				this.buttonGroup.insertFocusGui(this.cheatsButton, 0, 0);
+			},
+		});
+	}
 	// END: Cheats GUI
 });
 })();
